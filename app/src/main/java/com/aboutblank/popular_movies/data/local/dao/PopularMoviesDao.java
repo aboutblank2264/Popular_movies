@@ -6,7 +6,7 @@
 //import android.arch.persistence.room.Query;
 //
 //import com.aboutblank.popular_movies.data.local.entity.PopularMoviesEntity;
-//import com.aboutblank.popular_movies.domain.model.Movie;
+//import com.aboutblank.popular_movies.domain.model.MovieEntry;
 //
 //import java.util.List;
 //
@@ -20,7 +20,7 @@
 //    PopularMoviesEntity getMostPopularMovies();
 //
 //    @Query("SELECT * FROM popularMovies WHERE pageId = :page LIMIT 1")
-//    List<Movie> getMostPopularMovies(int page);
+//    List<MovieEntry> getMostPopularMovies(int page);
 //
 //    @Query("DELETE FROM popularMovies")
 //    void deleteAllPages();

@@ -6,14 +6,19 @@ import android.widget.ImageView;
 
 import com.aboutblank.popular_movies.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    private ImageView imageView;
+    @BindView(R.id.item_image) ImageView imageView;
+    private ItemClickedListener itemClickedListener;
 
-    public RecyclerViewHolder(View view) {
+    public RecyclerViewHolder(View view, ItemClickedListener itemClickedListener) {
         super(view);
+        ButterKnife.bind(this, view);
 
-        imageView = view.findViewById(R.id.item_image);
+        this.itemClickedListener = itemClickedListener;
+
         imageView.setOnClickListener(this);
     }
 
@@ -23,6 +28,12 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View v) {
-        //TODO Expand
+        if (itemClickedListener != null) {
+            itemClickedListener.onItemClick(v, getAdapterPosition());
+        }
+    }
+
+    public interface ItemClickedListener {
+        void onItemClick(View view, int position);
     }
 }

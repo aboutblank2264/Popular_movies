@@ -8,6 +8,10 @@ import com.aboutblank.popular_movies.presentation.model.Movie;
 
 import java.util.List;
 
+/**
+ * Implementation of DataSource, contains all finer DataSource implementations,
+ * only public DataSource class available, contains business logic to fetch the right type of data.
+ */
 public class DataRepository implements DataSource {
     private final DataSource remoteDataSource;
 
@@ -17,7 +21,7 @@ public class DataRepository implements DataSource {
         this.remoteDataSource = RemoteDataSourceImpl.getInstance();
     }
 
-    public DataRepository getInstance() {
+    public static DataRepository getInstance() {
         if(instance == null) {
             instance = new DataRepository();
         }
@@ -75,5 +79,10 @@ public class DataRepository implements DataSource {
                 callBack.onDataNotAvailable(error);
             }
         });
+    }
+
+    @Override
+    public void getListOfGenres(@NonNull LoadDataCallBack callBack) {
+        //TODO
     }
 }

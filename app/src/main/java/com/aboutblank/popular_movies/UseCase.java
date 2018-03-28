@@ -1,12 +1,14 @@
 package com.aboutblank.popular_movies;
 
+/**
+ * Abstract class that all Usecases extend from.
+ * Contains a callback class to return value from lower layers.
+ * @param <T>
+ * @param <R>
+ */
 public abstract class UseCase<T extends UseCase.RequestValue, R extends UseCase.ResponseValue> {
     private T requestValue;
     private CallBack<R> callBack;
-
-    public T getRequestValue() {
-        return requestValue;
-    }
 
     public void setRequestValue(T requestValue) {
         this.requestValue = requestValue;

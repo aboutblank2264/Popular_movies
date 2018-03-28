@@ -1,8 +1,29 @@
 <resources>
-    <string name="app_name">Popular_Movies</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="app_name">MovieDb</string>
+
+    //Settings
+    <string name="action_popular">Most Popular</string>
+    <string name="action_highest_rated">Highest Rating</string>
+
 
     <string name="image_url_start">"https://image.tmdb.org/t/p/"</string>
     <string name="default_image_size">"w185"</string>
+    <string name="default_backdrop_size">"w1280"</string>
+
+    <string name="movie_poster">Movie poster</string>
+    <string name="movie_backdrop">Movie backdrop</string>
+
+    //Movie bundle strings
+    <string name="bundle_movie">movie</string>
+    <string name="bundle_image">image</string>
+    <string name="bundle_title">title</string>
+    <string name="bundle_description">description</string>
+    <string name="bundle_date">date</string>
+    <string name="bundle_votes">votes</string>
+    <string name="bundle_popularity">popularity</string>
+    <string name="bundle_backdrop">movie_poster</string>
+    <string name="release_date">Released</string>
+    <string name="rating">Rating</string>
+    <string name="popularity">Popularity</string>
+    <string name="overview">Overview</string>
 </resources>

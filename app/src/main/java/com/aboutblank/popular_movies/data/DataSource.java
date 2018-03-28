@@ -7,6 +7,10 @@ import com.aboutblank.popular_movies.presentation.model.Movie;
 
 import java.util.List;
 
+/**
+ * Interface for Data layer.
+ * Contains callback to return data retrieved back to higher layers.
+ */
 public interface DataSource {
 
     interface LoadDataCallBack {
@@ -21,4 +25,6 @@ public interface DataSource {
     void getHighestRatedMovies(@NonNull LoadDataCallBack callBack);
 
     void getPopularMovies(@NonNull LoadDataCallBack callBack);
+
+    void getListOfGenres(@NonNull LoadDataCallBack callBack);
 }

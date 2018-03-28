@@ -5,7 +5,7 @@
 //import android.arch.persistence.room.OnConflictStrategy;
 //import android.arch.persistence.room.Query;
 //
-//import com.aboutblank.popular_movies.movies.domain.model.Movie;
+//import com.aboutblank.popular_movies.movies.domain.model.MovieEntry;
 //
 //import java.util.List;
 //
@@ -13,13 +13,13 @@
 //public interface MovieDao {
 //
 //    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    public void addMovie(Movie movie);
+//    public void addMovie(MovieEntry movie);
 //
 //    @Query("SELECT * FROM movies WHERE id LIKE :id LIMIT 1")
-//    public Movie getMovie(int id);
+//    public MovieEntry getMovie(int id);
 //
 //    @Query("SELECT * FROM movies")
-//    public List<Movie> getAllMovies();
+//    public List<MovieEntry> getAllMovies();
 //
 //    @Query("DELETE FROM movies")
 //    public void deleteAllMovies();

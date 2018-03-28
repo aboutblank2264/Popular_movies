@@ -15,4 +15,6 @@ public interface MovieDbServiceApi {
     @GET("movie/top_rated")
     Call<ListOfMovies> getHighestRatedMovies(@Query("language") String lang,
                                                    @Query("page") int page, @Query("region") String region);
+
+//    @GET("genre/movie/list")
 }

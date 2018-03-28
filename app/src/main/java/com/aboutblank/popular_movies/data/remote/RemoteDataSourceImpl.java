@@ -8,6 +8,7 @@ import com.aboutblank.popular_movies.data.domain.ListOfMovies;
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
 import com.aboutblank.popular_movies.data.remote.retrofit.MovieDbApiGenerator;
 import com.aboutblank.popular_movies.data.remote.retrofit.MovieDbServiceApi;
+import com.aboutblank.popular_movies.utils.MovieUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,7 +20,7 @@ public class RemoteDataSourceImpl implements DataSource {
     private static RemoteDataSourceImpl instance;
 
     public static RemoteDataSourceImpl getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new RemoteDataSourceImpl();
         }
 
@@ -40,7 +41,9 @@ public class RemoteDataSourceImpl implements DataSource {
         call.enqueue(new Callback<ListOfMovies>() {
             @Override
             public void onResponse(Call<ListOfMovies> call, Response<ListOfMovies> response) {
-                callBack.onDataLoaded(response.body().getMovies());
+
+                Log.d(RemoteDataSourceImpl.class.getSimpleName(), response.body().toString());
+                callBack.onDataLoaded(MovieUtils.entryListToMovieList(response.body().getMovies()));
             }
 
             @Override
@@ -64,11 +67,11 @@ public class RemoteDataSourceImpl implements DataSource {
         call.enqueue(new Callback<ListOfMovies>() {
             @Override
             public void onResponse(Call<ListOfMovies> call, Response<ListOfMovies> response) {
-                if(response.body() != null) {
+                if (response.body() != null) {
 
                     Log.d(RemoteDataSourceImpl.class.getSimpleName(), response.body().toString());
 
-                    callBack.onDataLoaded(response.body().getMovies());
+                    callBack.onDataLoaded(MovieUtils.entryListToMovieList(response.body().getMovies()));
                 }
             }
 
@@ -81,5 +84,11 @@ public class RemoteDataSourceImpl implements DataSource {
                 callBack.onDataNotAvailable(t.getLocalizedMessage());
             }
         });
+    }
+
+    @Override
+    public void getListOfGenres(@NonNull LoadDataCallBack callBack) {
+        //TODO
+        callBack.onDataNotAvailable("Not implemented yet");
     }
 }

@@ -3,7 +3,7 @@
 //import android.arch.persistence.room.PrimaryKey;
 //import android.arch.persistence.room.Relation;
 //
-//import com.aboutblank.popular_movies.domain.model.Movie;
+//import com.aboutblank.popular_movies.domain.model.MovieEntry;
 //
 //import java.util.List;
 //
@@ -14,10 +14,10 @@
 //    @PrimaryKey
 //    private int pageId;
 //
-//    @Relation(parentColumn = "pageId", entityColumn = "id", entity = Movie.class)
-//    private List<Movie> movieList;
+//    @Relation(parentColumn = "pageId", entityColumn = "id", entity = MovieEntry.class)
+//    private List<MovieEntry> movieList;
 //
-//    public HighestRatedMoviesEntity(int pageId, List<Movie> movieList) {
+//    public HighestRatedMoviesEntity(int pageId, List<MovieEntry> movieList) {
 //        this.pageId = pageId;
 //        this.movieList = movieList;
 //    }
@@ -33,11 +33,11 @@
 //        return pageId;
 //    }
 //
-//    public void setMovieList(List<Movie> movieList) {
+//    public void setMovieList(List<MovieEntry> movieList) {
 //        this.movieList = movieList;
 //    }
 //
-//    public List<Movie> getMovieList() {
+//    public List<MovieEntry> getMovieList() {
 //        return movieList;
 //    }
 //}

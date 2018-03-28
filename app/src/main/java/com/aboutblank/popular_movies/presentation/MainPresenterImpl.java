@@ -11,9 +11,12 @@ import com.aboutblank.popular_movies.presentation.usecase.GetMovieData;
 
 import java.util.List;
 
+/**
+ * Class that acts as bridge between user actions and UI.
+ * Communicates between Domain layer and View layer
+ */
 public class MainPresenterImpl implements MainPresenter {
     private MainPresenter.View view;
-    private DataSource remoteDataSource;
     private UseCaseExecutor executor;
 
     private GetMovieData getMovieData;
@@ -22,7 +25,6 @@ public class MainPresenterImpl implements MainPresenter {
                              @NonNull DataSource remoteDataSource,
                              @NonNull UseCaseExecutor executor) {
         this.view = view;
-        this.remoteDataSource = remoteDataSource;
         this.executor = executor;
 
         this.view.setPresenter(this);
@@ -54,51 +56,37 @@ public class MainPresenterImpl implements MainPresenter {
     private void loadPopularMovieData() {
         executor.execute(getMovieData,
                 new GetMovieData.RequestValue(GetMovieData.ListType.POPULAR, new MovieDbRequest()),
-                new UseCase.CallBack<GetMovieData.ResponseValue>(){
-
-                    @Override
-                    public void onSuccess(GetMovieData.ResponseValue response) {
-                        List<Movie> movies = response.getMovies();
-
-                        view.showMovies(movies);
-
-                        view.showProgress(false);
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        view.showError(error);
-
-                        view.showProgress(false);
-                    }
-                });
+                getDefaultCallback());
     }
 
     private void loadHighestRatedMovies() {
         executor.execute(getMovieData,
                 new GetMovieData.RequestValue(GetMovieData.ListType.HIGHEST_RATED, new MovieDbRequest()),
-                new UseCase.CallBack<GetMovieData.ResponseValue>(){
-
-                    @Override
-                    public void onSuccess(GetMovieData.ResponseValue response) {
-                        List<Movie> movies = response.getMovies();
-
-                        view.showMovies(movies);
-
-                        view.showProgress(false);
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        view.showError(error);
-
-                        view.showProgress(false);
-                    }
-                });
+                getDefaultCallback());
     }
 
     @Override
     public void onError(String error) {
+        view.showError(error);
+    }
 
+    private UseCase.CallBack<GetMovieData.ResponseValue> getDefaultCallback() {
+        return new UseCase.CallBack<GetMovieData.ResponseValue>() {
+
+            @Override
+            public void onSuccess(GetMovieData.ResponseValue response) {
+                List<Movie> movies = response.getMovies();
+
+                view.showMovies(movies);
+                view.showProgress(false);
+            }
+
+            @Override
+            public void onError(String error) {
+                view.showError(error);
+
+                view.showProgress(false);
+            }
+        };
     }
 }

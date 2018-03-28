@@ -7,9 +7,9 @@
 //
 //import com.aboutblank.popular_movies.data.local.entity.HighestRatedMoviesEntity;
 //import com.aboutblank.popular_movies.data.local.entity.PopularMoviesEntity;
-//import com.aboutblank.popular_movies.domain.model.Movie;
+//import com.aboutblank.popular_movies.domain.model.MovieEntry;
 //
-//@Database(entities = {Movie.class, HighestRatedMoviesEntity.class, PopularMoviesEntity.class},
+//@Database(entities = {MovieEntry.class, HighestRatedMoviesEntity.class, PopularMoviesEntity.class},
 //        version = 1)
 //public abstract class MoviesLocalDatabase extends RoomDatabase {
 //
