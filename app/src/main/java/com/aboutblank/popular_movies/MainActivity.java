@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public void showMovies(@NonNull List<Movie> movies) {
         recyclerViewAdapter.update(movies);
 
-        Log.d(MainActivity.class.getSimpleName(), "what thread:" + Thread.currentThread().getName());
         recyclerViewAdapter.notifyDataSetChanged();
     }
 
