@@ -21,6 +21,10 @@ import com.aboutblank.popular_movies.presentation.usecase.GetMovieData;
 
 import java.util.List;
 
+/**
+ * MVP and Clean architecture reference:
+ * https://github.com/googlesamples/android-architecture/tree/todo-mvp-clean/
+ */
 public class MainActivity extends AppCompatActivity implements MainPresenter.View {
 
     private MainPresenter presenter;
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        new MainPresenterImpl(this, DataRepository.getInstance(), UseCaseExecutor.getInstance());
+        presenter = new MainPresenterImpl(this, DataRepository.getInstance(), UseCaseExecutor.getInstance());
 
         presenter.start();
     }

@@ -1,7 +1,6 @@
 package com.aboutblank.popular_movies.presentation;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.aboutblank.popular_movies.UseCase;
 import com.aboutblank.popular_movies.UseCaseExecutor;
@@ -27,8 +26,6 @@ public class MainPresenterImpl implements MainPresenter {
                              @NonNull UseCaseExecutor executor) {
         this.view = view;
         this.executor = executor;
-
-        this.view.setPresenter(this);
 
         getMovieData = new GetMovieData(remoteDataSource);
 
