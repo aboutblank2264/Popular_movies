@@ -15,7 +15,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RemoteDataSourceImpl implements DataSource {
-    private MovieDbServiceApi dbService;
+    private final MovieDbServiceApi dbService;
 
     private static RemoteDataSourceImpl instance;
 

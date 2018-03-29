@@ -60,7 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     }
 
     @Override
-    public void onItemClick(View view, int position) {
+    public void onItemClick(int position) {
         Movie movie = movieList.get(position);
         Intent intent = new Intent(inflater.getContext(), DetailsActivity.class);
 

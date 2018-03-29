@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MovieUtils {
 
-    static Movie entryToMovie(@NonNull MovieEntry entry) {
+    public static Movie entryToMovie(@NonNull MovieEntry entry) {
         return new Movie(entry.getTitle(),
                 entry.getPosterPath(),
                 entry.getBackdropPath(),

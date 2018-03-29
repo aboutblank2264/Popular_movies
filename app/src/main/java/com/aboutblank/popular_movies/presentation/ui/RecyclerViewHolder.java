@@ -29,11 +29,11 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onClick(View v) {
         if (itemClickedListener != null) {
-            itemClickedListener.onItemClick(v, getAdapterPosition());
+            itemClickedListener.onItemClick(getAdapterPosition());
         }
     }
 
     public interface ItemClickedListener {
-        void onItemClick(View view, int position);
+        void onItemClick(int position);
     }
 }

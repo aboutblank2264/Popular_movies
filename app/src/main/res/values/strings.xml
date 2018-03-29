@@ -12,6 +12,7 @@
 
     <string name="movie_poster">Movie poster</string>
     <string name="movie_backdrop">Movie backdrop</string>
+    <string name="movie_item">Movie Item</string>
 
     //Movie bundle strings
     <string name="bundle_movie">movie</string>
@@ -20,10 +21,8 @@
     <string name="bundle_description">description</string>
     <string name="bundle_date">date</string>
     <string name="bundle_votes">votes</string>
-    <string name="bundle_popularity">popularity</string>
     <string name="bundle_backdrop">movie_poster</string>
     <string name="release_date">Released</string>
     <string name="rating">Rating</string>
-    <string name="popularity">Popularity</string>
     <string name="overview">Overview</string>
 </resources>

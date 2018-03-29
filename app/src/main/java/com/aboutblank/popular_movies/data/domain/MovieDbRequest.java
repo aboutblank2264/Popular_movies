@@ -1,14 +1,21 @@
 package com.aboutblank.popular_movies.data.domain;
 
+import android.support.annotation.NonNull;
+
 public class MovieDbRequest {
-    private String language = "";
-    private int page = 1;
-    private String region = "";
+    private String language;
+    private int page;
+    private String region;
 
     public MovieDbRequest() {
+        this("", 1, "");
     }
 
-    public MovieDbRequest(String language, int page, String region) {
+    public MovieDbRequest(@NonNull String language, int page, @NonNull String region) {
+        if(page <= 0) {
+            throw new IllegalArgumentException("Cannot have page be less than 1, given" + page);
+        }
+
         this.language = language;
         this.page = page;
         this.region = region;

@@ -28,13 +28,12 @@ public class ImageUtils {
     }
 
     private static String getImageUrl(Resources resources, String imageSize, String movieUrl) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(resources.getString(R.string.image_url_start));
-        builder.append(imageSize);
-        builder.append(movieUrl);
+        String string = resources.getString(R.string.image_url_start) +
+                imageSize +
+                movieUrl;
 
 //        Log.i(ImageUtils.class.getSimpleName(), builder.toString());
 
-        return builder.toString();
+        return string;
     }
 }

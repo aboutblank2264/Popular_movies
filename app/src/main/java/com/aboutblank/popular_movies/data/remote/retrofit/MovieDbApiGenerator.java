@@ -21,9 +21,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Reference: http://www.vogella.com/tutorials/Retrofit/article.html
  */
 public class MovieDbApiGenerator {
-    private static String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
+    private final static String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
 
-    private static Interceptor apiInterceptor = new Interceptor() {
+    private final static Interceptor apiInterceptor = new Interceptor() {
         @Override
         public Response intercept(@NonNull Chain chain) throws IOException {
             Request request = chain.request();
@@ -33,22 +33,22 @@ public class MovieDbApiGenerator {
         }
     };
 
-    private static HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor()
-            .setLevel(HttpLoggingInterceptor.Level.BASIC);
+    private final static HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor()
+            .setLevel(HttpLoggingInterceptor.Level.BODY);
 
-    private static OkHttpClient httpClient = new OkHttpClient().newBuilder()
+    private final static OkHttpClient httpClient = new OkHttpClient().newBuilder()
             .addInterceptor(apiInterceptor)
             .addInterceptor(httpLoggingInterceptor)
             .build();
 
-    private static Retrofit.Builder builder = new Retrofit.Builder()
+    private final static Retrofit.Builder builder = new Retrofit.Builder()
             .baseUrl(MOVIE_DB_URL)
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create());
 
-    private static Retrofit retrofit = builder.build();
+    private final static Retrofit retrofit = builder.build();
 
-    public static MovieDbServiceApi createTheMovieDbService() {
+    public final static MovieDbServiceApi createTheMovieDbService() {
         return retrofit.create(MovieDbServiceApi.class);
     }
 }

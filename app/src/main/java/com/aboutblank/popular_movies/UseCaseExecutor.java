@@ -18,9 +18,9 @@ public class UseCaseExecutor {
     private final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
     private final BlockingQueue<Runnable> BLOCKING_QUEUE = new LinkedBlockingQueue<>(MAX_POOL_SIZE);
 
-    private ThreadPoolExecutor executor;
+    private final ThreadPoolExecutor executor;
 
-    public UseCaseExecutor() {
+    private UseCaseExecutor() {
         this.executor = new ThreadPoolExecutor(CORE_POOL_SIZE,
                 MAX_POOL_SIZE,
                 KEEP_ALIVE_TIME,
@@ -36,10 +36,10 @@ public class UseCaseExecutor {
         return instance;
     }
 
-    public <T extends UseCase.RequestValue, R extends UseCase.ResponseValue> void execute(
-            final UseCase<T, R> useCase,
+    public <T extends UseCase.RequestValue, V extends UseCase.ResponseValue> void execute(
+            final UseCase<T, V> useCase,
             T requestValue,
-            UseCase.CallBack<R> callback) {
+            UseCase.CallBack<V> callback) {
         useCase.setRequestValue(requestValue);
         useCase.setCallBack(callback);
 

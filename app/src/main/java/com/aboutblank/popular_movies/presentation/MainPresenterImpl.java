@@ -1,6 +1,7 @@
 package com.aboutblank.popular_movies.presentation;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.aboutblank.popular_movies.UseCase;
 import com.aboutblank.popular_movies.UseCaseExecutor;
@@ -16,8 +17,8 @@ import java.util.List;
  * Communicates between Domain layer and View layer
  */
 public class MainPresenterImpl implements MainPresenter {
-    private MainPresenter.View view;
-    private UseCaseExecutor executor;
+    private final MainPresenter.View view;
+    private final UseCaseExecutor executor;
 
     private GetMovieData getMovieData;
 
