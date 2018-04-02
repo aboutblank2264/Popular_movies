@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aboutblank.popular_movies.R;
+import com.aboutblank.popular_movies.presentation.MainPresenter;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.utils.ImageUtils;
-import com.aboutblank.popular_movies.utils.MovieUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +25,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
 
     private List<Movie> movieList;
     private LayoutInflater inflater;
+    private MainPresenter presenter;
 
-    public RecyclerViewAdapter(LayoutInflater inflater) {
-        this.inflater = inflater;
+    public RecyclerViewAdapter(LayoutInflater inflater, MainPresenter presenter) {
         this.movieList = new ArrayList<>();
+        this.inflater = inflater;
+        this.presenter = presenter;
     }
 
     @Override
@@ -64,7 +66,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         Movie movie = movieList.get(position);
         Intent intent = new Intent(inflater.getContext(), DetailsActivity.class);
 
-        intent.putExtra(inflater.getContext().getString(R.string.bundle_movie), MovieUtils.movieToBundle(inflater.getContext(), movie));
+        intent.putExtra(inflater.getContext().getString(R.string.bundle_movie), movie);
 
         inflater.getContext().startActivity(intent);
     }

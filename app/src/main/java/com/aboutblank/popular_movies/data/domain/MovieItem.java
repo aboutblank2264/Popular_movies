@@ -2,7 +2,9 @@ package com.aboutblank.popular_movies.data.domain;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 
+import com.aboutblank.popular_movies.utils.IntListTypeConverter;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -10,11 +12,11 @@ import java.util.List;
 /**
  * Serving double duty with local db Room entity.
  *
- * Example MovieEntry JSON
+ * Example MovieItem JSON
  *
  {
      "vote_count": 125,
-     "id": 441614,
+     "pageId": 441614,
      "video": false,
      "vote_average": 4.7,
      "title": "Loving",
@@ -31,8 +33,9 @@ import java.util.List;
      "release_date": "2017-04-21"
  }
  */
-@Entity(tableName = "movies")
-public class MovieEntry {
+@Entity
+@TypeConverters(IntListTypeConverter.class)
+public class MovieItem {
 
     @PrimaryKey
     private int id;
@@ -172,9 +175,9 @@ public class MovieEntry {
 
     @Override
     public String toString() {
-        return "MovieEntry{" +
+        return "MovieItem{" +
                 "voteCount=" + voteCount +
-                ", id=" + id +
+                ", pageId=" + id +
                 ", video=" + video +
                 ", voteAverage=" + voteAverage +
                 ", title='" + title + '\'' +

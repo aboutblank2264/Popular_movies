@@ -29,7 +29,6 @@ public abstract class UseCase<T extends UseCase.RequestValue, R extends UseCase.
     }
 
     public interface RequestValue {
-
     }
 
     public interface ResponseValue {

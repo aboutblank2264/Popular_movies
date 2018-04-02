@@ -9,17 +9,17 @@ import com.aboutblank.popular_movies.presentation.model.Movie;
 
 import java.util.List;
 
-public class GetMovieData extends
-        UseCase<GetMovieData.RequestValue, GetMovieData.ResponseValue> {
+public class GetMovieDataUseCase extends
+        UseCase<GetMovieDataUseCase.RequestValue, GetMovieDataUseCase.ResponseValue> {
     private DataSource dataSource;
 
-    public GetMovieData(@NonNull DataSource dataSource) {
+    public GetMovieDataUseCase(@NonNull DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
     public void execute(final RequestValue requestValue) {
-        DataSource.LoadDataCallBack callback = getCallback(requestValue);
+        DataSource.LoadMovieDataCallBack callback = getCallback(requestValue);
 
         switch (requestValue.listType) {
             case POPULAR:
@@ -34,8 +34,8 @@ public class GetMovieData extends
         }
     }
 
-    private DataSource.LoadDataCallBack getCallback(final RequestValue requestValue) {
-        return new DataSource.LoadDataCallBack() {
+    private DataSource.LoadMovieDataCallBack getCallback(final RequestValue requestValue) {
+        return new DataSource.LoadMovieDataCallBack() {
             @Override
             public MovieDbRequest getRequest() {
                 return requestValue.getDbRequest();
@@ -54,7 +54,7 @@ public class GetMovieData extends
     }
 
     public static class RequestValue implements UseCase.RequestValue {
-        private ListType listType;
+        private final ListType listType;
         private final MovieDbRequest dbRequest;
 
         public RequestValue(@NonNull ListType listType, @NonNull MovieDbRequest request) {

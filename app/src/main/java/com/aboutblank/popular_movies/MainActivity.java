@@ -13,11 +13,12 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.aboutblank.popular_movies.data.DataRepository;
+import com.aboutblank.popular_movies.presentation.DatabaseReader;
 import com.aboutblank.popular_movies.presentation.MainPresenter;
 import com.aboutblank.popular_movies.presentation.MainPresenterImpl;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.ui.RecyclerViewAdapter;
-import com.aboutblank.popular_movies.presentation.usecase.GetMovieData;
+import com.aboutblank.popular_movies.presentation.usecase.GetMovieDataUseCase;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     private RecyclerViewAdapter recyclerViewAdapter;
     private ProgressBar progressBar;
 
-    private GetMovieData.ListType listType = GetMovieData.ListType.POPULAR;
+    private GetMovieDataUseCase.ListType listType = GetMovieDataUseCase.ListType.POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +41,17 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         progressBar = findViewById(R.id.progressBar);
 
+        new MainPresenterImpl(this,
+                new GetMovieDataUseCase(DataRepository.getInstance(new DatabaseReader(this))),
+                UseCaseExecutor.getInstance());
+
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        recyclerViewAdapter = new RecyclerViewAdapter(getLayoutInflater());
+        recyclerViewAdapter = new RecyclerViewAdapter(getLayoutInflater(), presenter);
 
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        presenter = new MainPresenterImpl(this, DataRepository.getInstance(), UseCaseExecutor.getInstance());
 
         presenter.start();
     }
@@ -62,14 +66,14 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        GetMovieData.ListType selectedType;
+        GetMovieDataUseCase.ListType selectedType;
 
         switch (item.getItemId()) {
             case R.id.menu_popular:
-                selectedType = GetMovieData.ListType.POPULAR;
+                selectedType = GetMovieDataUseCase.ListType.POPULAR;
                 break;
             case R.id.menu_highest_rated:
-                selectedType = GetMovieData.ListType.HIGHEST_RATED;
+                selectedType = GetMovieDataUseCase.ListType.HIGHEST_RATED;
                 break;
             default:
                 selectedType = listType;
@@ -106,8 +110,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         recyclerViewAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void changeMovieType(@NonNull GetMovieData.ListType listType) {
+    private void changeMovieType(@NonNull GetMovieDataUseCase.ListType listType) {
         Log.d(MainActivity.class.getSimpleName(), "Changing movie list " + listType.name());
         if (listType != this.listType) {
             this.listType = listType;
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     @Override
-    public GetMovieData.ListType showMovieType() {
+    public GetMovieDataUseCase.ListType showMovieType() {
         return listType;
     }
 }

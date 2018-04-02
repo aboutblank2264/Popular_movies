@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Collections;
 import java.util.List;
 
-public class ListOfMovies {
+public class ListOfMovieItems {
     @SerializedName("page")
     private int pageId = 0;
     @SerializedName("total_results")
     private int totalResults = 0;
     @SerializedName("results")
-    private List<MovieEntry> movies = Collections.emptyList();
+    private List<MovieItem> movies = Collections.emptyList();
 
     public int getPageId() {
         return pageId;
@@ -29,17 +29,17 @@ public class ListOfMovies {
         this.totalResults = totalResults;
     }
 
-    public List<MovieEntry> getMovies() {
+    public List<MovieItem> getMovies() {
         return movies;
     }
 
-    public void setMovies(List<MovieEntry> movies) {
+    public void setMovies(List<MovieItem> movies) {
         this.movies = movies;
     }
 
     @Override
     public String toString() {
-        return "ListOfMovies{" +
+        return "ListOfMovieItems{" +
                 "pageId=" + pageId +
                 ", totalResults=" + totalResults +
                 ", movies=" + movies +
