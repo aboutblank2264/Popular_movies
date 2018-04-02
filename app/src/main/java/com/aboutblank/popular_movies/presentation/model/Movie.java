@@ -3,22 +3,33 @@ package com.aboutblank.popular_movies.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Movie implements Parcelable {
+    private String id;
     private String title;
     private String posterUrl;
     private String backdrop;
     private String releaseDate;
     private String overview;
     private double vote;
+    private List<Integer> genres;
 
-    public Movie(String title, String posterUrl, String backdrop, String releaseDate,
-                 String overview, double vote) {
+    public Movie(String id, String title, String posterUrl, String backdrop, String releaseDate,
+                 String overview, double vote, List<Integer> genres) {
+        this.id = id;
         this.title = title;
         this.posterUrl = posterUrl;
         this.backdrop = backdrop;
         this.releaseDate = releaseDate;
         this.overview = overview;
         this.vote = vote;
+        this.genres = genres;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -45,14 +56,21 @@ public class Movie implements Parcelable {
         return vote;
     }
 
+    public List<Integer> getGenres() {
+        return genres;
+    }
+
     //NOTE: ORDER MUST BE THE SAME AS writeToParcel
     private Movie(Parcel in) {
+        id = in.readString();
         posterUrl = in.readString();
         title = in.readString();
         releaseDate = in.readString();
         overview = in.readString();
         vote = in.readDouble();
         backdrop = in.readString();
+        genres = new ArrayList<>();
+        in.readList(genres, null);
     }
 
     @Override
@@ -62,23 +80,27 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
+        out.writeString(getId());
         out.writeString(getPosterUrl());
         out.writeString(getTitle());
         out.writeString(getReleaseDate());
         out.writeString(getOverview());
         out.writeDouble(getVote());
         out.writeString(getBackdrop());
+        out.writeList(getGenres());
     }
 
     @Override
     public String toString() {
         return "Movie{" +
-                "title='" + title + '\'' +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
                 ", posterUrl='" + posterUrl + '\'' +
                 ", backdrop='" + backdrop + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", overview='" + overview + '\'' +
                 ", vote=" + vote +
+                ", genres=" + genres +
                 '}';
     }
 

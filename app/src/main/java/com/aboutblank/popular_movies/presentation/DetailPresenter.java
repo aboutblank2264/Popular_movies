@@ -12,14 +12,16 @@ import java.util.List;
 
 public interface DetailPresenter extends BasePresenter {
 
-    void getMovieVideos(@NonNull String trailerUrl);
+    void getMovieVideos(@NonNull String movieId);
 
     void getMovieReviews(@NonNull String movieId);
+
+    void getMovieGenres(@NonNull List<Integer> genres);
 
     interface View extends BaseView<DetailPresenter> {
         Movie getMovie();
 
-        String getMovieId();
+        void showGenres(List<String> genres);
 
         void showReviews(List<MovieReview> reviews);
 

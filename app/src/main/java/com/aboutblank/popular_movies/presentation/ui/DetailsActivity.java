@@ -15,10 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aboutblank.popular_movies.R;
+import com.aboutblank.popular_movies.UseCaseExecutor;
+import com.aboutblank.popular_movies.data.DataRepository;
+import com.aboutblank.popular_movies.presentation.DatabaseReader;
 import com.aboutblank.popular_movies.presentation.DetailPresenter;
+import com.aboutblank.popular_movies.presentation.DetailPresenterImpl;
+import com.aboutblank.popular_movies.presentation.model.DataType;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.model.MovieReview;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
+import com.aboutblank.popular_movies.presentation.usecase.GetGenresUseCase;
+import com.aboutblank.popular_movies.presentation.usecase.GetListOfDataUseCase;
 import com.aboutblank.popular_movies.utils.ImageUtils;
 import com.aboutblank.popular_movies.utils.MovieUtils;
 
@@ -46,7 +53,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     TextView votes;
 
     private Movie movie;
-    private String movieId;
 
     private int currentAmountFetchedData = 0;
 
@@ -79,9 +85,21 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
             colorizeActionbar();
         }
 
-        movieId = getIntent().getStringExtra("movie_id");
+        DataRepository dataRepository = DataRepository.getInstance(new DatabaseReader(this));
 
-//        new DetailPresenterImpl(this, )
+        new DetailPresenterImpl(this,
+                new GetListOfDataUseCase<MovieReview>(dataRepository, DataType.REVIEWS),
+                new GetListOfDataUseCase<MovieVideo>(dataRepository, DataType.VIDEOS),
+                new GetGenresUseCase(dataRepository),
+                UseCaseExecutor.getInstance());
+
+        start();
+    }
+
+    private void start() {
+        presenter.getMovieGenres(movie.getGenres());
+        presenter.getMovieReviews(movie.getId());
+        presenter.getMovieVideos(movie.getId());
     }
 
     @Override
@@ -96,6 +114,11 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     @Override
     public void setPresenter(@NonNull DetailPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public Movie getMovie() {
+        return movie;
     }
 
     public void loadPoster() {
@@ -114,7 +137,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
         int dominateColor = p.getDominantColor(getResources().getColor(R.color.primaryDarkColor));
         int darkVibrantColor = p.getDarkVibrantColor(getResources().getColor(R.color.primaryDarkColor));
 
-        if(darkVibrantColor < dominateColor) {
+        if (darkVibrantColor < dominateColor) {
             Log.d(DetailsActivity.class.getSimpleName(), "dominate color chosen");
             dominateColor = darkVibrantColor;
         }
@@ -128,28 +151,23 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     }
 
     @Override
-    public Movie getMovie() {
-        return movie;
-    }
-
-    @Override
-    public String getMovieId() {
-        return movieId;
+    public void showGenres(List<String> genres) {
+        Log.d(DetailsActivity.class.getSimpleName(), "Genres: " + genres);
     }
 
     @Override
     public void showReviews(List<MovieReview> reviews) {
-        //TODO
+        Log.d(DetailsActivity.class.getSimpleName(), "Reviews: " + reviews);
     }
 
     @Override
     public void showVideos(List<MovieVideo> videos) {
-        //TODO
+        Log.d(DetailsActivity.class.getSimpleName(), "Videos: " + videos);
     }
 
     @Override
     public void finishedLoading(boolean value) {
-        if(value) {
+        if (value) {
             currentAmountFetchedData++;
         }
     }

@@ -11,12 +11,15 @@ import java.util.List;
 public class MovieUtils {
 
     public static Movie entryToMovie(@NonNull MovieItem entry) {
-        return new Movie(entry.getTitle(),
+        return new Movie(
+                String.valueOf(entry.getId()),
+                entry.getTitle(),
                 entry.getPosterPath(),
                 entry.getBackdropPath(),
                 entry.getReleaseDate(),
                 entry.getOverview(),
-                entry.getVoteAverage());
+                entry.getVoteAverage(),
+                entry.getGenreIds());
     }
 
     public static List<Movie> entryListToMovieList(@NonNull List<MovieItem> entries) {

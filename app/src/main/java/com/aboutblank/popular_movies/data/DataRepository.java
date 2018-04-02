@@ -1,17 +1,19 @@
 package com.aboutblank.popular_movies.data;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.util.SparseArray;
 
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
-import com.aboutblank.popular_movies.presentation.model.MovieReview;
-import com.aboutblank.popular_movies.presentation.model.MovieVideo;
 import com.aboutblank.popular_movies.data.local.LocalDataSourceImpl;
 import com.aboutblank.popular_movies.data.remote.RemoteDataSourceImpl;
 import com.aboutblank.popular_movies.presentation.DatabaseReader;
+import com.aboutblank.popular_movies.presentation.model.DataType;
 import com.aboutblank.popular_movies.presentation.model.Movie;
+import com.aboutblank.popular_movies.presentation.model.MovieReview;
+import com.aboutblank.popular_movies.presentation.model.MovieVideo;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation of DataSource, contains all finer DataSource implementations,
@@ -22,6 +24,8 @@ public class DataRepository implements DataSource {
     private final DataSource localDataSource;
 
     private static DataRepository instance;
+
+    private SparseArray<String> cached_genres;
 
     private DataRepository(DatabaseReader databaseReader) {
         this.remoteDataSource = RemoteDataSourceImpl.getInstance();
@@ -37,8 +41,8 @@ public class DataRepository implements DataSource {
     }
 
     @Override
-    public void getHighestRatedMovies(@NonNull final LoadMovieDataCallBack callBack) {
-        remoteDataSource.getHighestRatedMovies(new LoadMovieDataCallBack() {
+    public void getHighestRatedMovies(@NonNull final LoadListOfDataCallBack<Movie> callBack) {
+        remoteDataSource.getHighestRatedMovies(new LoadListOfDataCallBack<Movie>() {
             @Override
             public MovieDbRequest getRequest() {
                 if (callBack.getRequest() != null) {
@@ -46,6 +50,11 @@ public class DataRepository implements DataSource {
                 } else {
                     return new MovieDbRequest();
                 }
+            }
+
+            @Override
+            public DataType getDataType() {
+                return DataType.HIGHEST_RATED;
             }
 
             @Override
@@ -61,8 +70,8 @@ public class DataRepository implements DataSource {
     }
 
     @Override
-    public void getPopularMovies(@NonNull final LoadMovieDataCallBack callBack) {
-        remoteDataSource.getPopularMovies(new LoadMovieDataCallBack() {
+    public void getPopularMovies(@NonNull final LoadListOfDataCallBack<Movie> callBack) {
+        remoteDataSource.getPopularMovies(new LoadListOfDataCallBack<Movie>() {
             @Override
             public MovieDbRequest getRequest() {
                 if (callBack.getRequest() != null) {
@@ -70,6 +79,11 @@ public class DataRepository implements DataSource {
                 } else {
                     return new MovieDbRequest();
                 }
+            }
+
+            @Override
+            public DataType getDataType() {
+                return DataType.POPULAR;
             }
 
             @Override
@@ -85,15 +99,20 @@ public class DataRepository implements DataSource {
     }
 
     @Override
-    public void getMovieReviews(@NonNull final LoadMovieReviewCallBack callBack) {
-        remoteDataSource.getMovieReviews(new LoadMovieReviewCallBack() {
+    public void getMovieReviews(@NonNull final LoadListOfDataCallBack<MovieReview> callBack) {
+        remoteDataSource.getMovieReviews(new LoadListOfDataCallBack<MovieReview>() {
             @Override
             public MovieDbRequest getRequest() {
-                if(callBack.getRequest() != null) {
+                if (callBack.getRequest() != null) {
                     return callBack.getRequest();
                 } else {
                     return new MovieDbRequest();
                 }
+            }
+
+            @Override
+            public DataType getDataType() {
+                return callBack.getDataType();
             }
 
             @Override
@@ -109,15 +128,20 @@ public class DataRepository implements DataSource {
     }
 
     @Override
-    public void getMovieVideos(@NonNull final LoadMovieVideosCallBack callBack) {
-        remoteDataSource.getMovieVideos(new LoadMovieVideosCallBack() {
+    public void getMovieVideos(@NonNull final LoadListOfDataCallBack<MovieVideo> callBack) {
+        remoteDataSource.getMovieVideos(new LoadListOfDataCallBack<MovieVideo>() {
             @Override
             public MovieDbRequest getRequest() {
-                if(callBack.getRequest() != null) {
+                if (callBack.getRequest() != null) {
                     return callBack.getRequest();
                 } else {
                     return new MovieDbRequest();
                 }
+            }
+
+            @Override
+            public DataType getDataType() {
+                return callBack.getDataType();
             }
 
             @Override
@@ -134,31 +158,46 @@ public class DataRepository implements DataSource {
 
     @Override
     public void getListOfGenres(@NonNull final LoadGenreCallBack callBack) {
-        remoteDataSource.getListOfGenres(new LoadGenreCallBack() {
+        if (cached_genres != null) {
+            callBack.onDataLoaded(cached_genres);
+        } else {
+            remoteDataSource.getListOfGenres(new LoadGenreCallBack() {
 
-            @Override
-            public String getLanguage() {
-                if(callBack.getLanguage() != null && !callBack.getLanguage().isEmpty()) {
-                    return callBack.getLanguage();
-                } else {
-                    return "";
+                @Override
+                public String getLanguage() {
+                    if (callBack.getLanguage() != null && !callBack.getLanguage().isEmpty()) {
+                        return callBack.getLanguage();
+                    } else {
+                        return "";
+                    }
                 }
-            }
 
-            @Override
-            public void onDataLoaded(Map<Integer, String> genres) {
-                callBack.onDataLoaded(genres);
-            }
+                @Override
+                public void onDataLoaded(SparseArray<String> genres) {
+                    cached_genres = genres;
 
-            @Override
-            public void onDataNotAvailable(String error) {
-                callBack.onDataNotAvailable(error);
-            }
-        });
+                    Log.d(DataRepository.class.getSimpleName(), genres.toString());
+
+                    callBack.onDataLoaded(genres);
+                }
+
+                @Override
+                public void onDataNotAvailable(String error) {
+                    callBack.onDataNotAvailable(error);
+                }
+            });
+        }
     }
 
     @Override
     public void getListOfData(@NonNull LoadListOfDataCallBack callBack) {
-
+        switch (callBack.getDataType()) {
+            case REVIEWS:
+                getMovieReviews(callBack);
+                break;
+            case VIDEOS:
+                getMovieVideos(callBack);
+                break;
+        }
     }
 }

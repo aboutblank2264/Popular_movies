@@ -3,15 +3,18 @@ package com.aboutblank.popular_movies.presentation.usecase;
 import com.aboutblank.popular_movies.UseCase;
 import com.aboutblank.popular_movies.data.DataSource;
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
+import com.aboutblank.popular_movies.presentation.model.DataType;
 
 import java.util.List;
 
 public class GetListOfDataUseCase<T> extends
         UseCase<GetListOfDataUseCase.RequestValue, GetListOfDataUseCase.ResponseValue<T>> {
     private DataSource dataSource;
+    private DataType dataType;
 
-    public GetListOfDataUseCase(DataSource dataSource) {
+    public GetListOfDataUseCase(DataSource dataSource, DataType dataType) {
         this.dataSource = dataSource;
+        this.dataType = dataType;
     }
 
     @Override
@@ -20,6 +23,11 @@ public class GetListOfDataUseCase<T> extends
                 @Override
                 public MovieDbRequest getRequest() {
                     return requestValue.getDbRequest();
+                }
+
+                @Override
+                public DataType getDataType() {
+                    return dataType;
                 }
 
                 @Override
@@ -47,7 +55,7 @@ public class GetListOfDataUseCase<T> extends
     }
 
     public static class ResponseValue<T> implements UseCase.ResponseValue {
-        List<T> payload;
+        private final List<T> payload;
 
         public ResponseValue(List<T> payload) {
             this.payload = payload;

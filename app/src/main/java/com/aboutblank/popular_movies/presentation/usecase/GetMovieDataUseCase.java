@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.aboutblank.popular_movies.UseCase;
 import com.aboutblank.popular_movies.data.DataSource;
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
+import com.aboutblank.popular_movies.presentation.model.DataType;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 
 import java.util.List;
@@ -19,14 +20,12 @@ public class GetMovieDataUseCase extends
 
     @Override
     public void execute(final RequestValue requestValue) {
-        DataSource.LoadMovieDataCallBack callback = getCallback(requestValue);
-
         switch (requestValue.listType) {
             case POPULAR:
-                dataSource.getPopularMovies(callback);
+                dataSource.getPopularMovies(getCallback(requestValue, DataType.POPULAR));
                 break;
             case HIGHEST_RATED:
-                dataSource.getHighestRatedMovies(callback);
+                dataSource.getHighestRatedMovies(getCallback(requestValue, DataType.HIGHEST_RATED));
                 break;
             default:
                 // Throw an error
@@ -34,11 +33,35 @@ public class GetMovieDataUseCase extends
         }
     }
 
-    private DataSource.LoadMovieDataCallBack getCallback(final RequestValue requestValue) {
-        return new DataSource.LoadMovieDataCallBack() {
+//    private DataSource.LoadMovieDataCallBack getCallback(final RequestValue requestValue) {
+//        return new DataSource.LoadMovieDataCallBack() {
+//            @Override
+//            public MovieDbRequest getRequest() {
+//                return requestValue.getDbRequest();
+//            }
+//
+//            @Override
+//            public void onDataLoaded(List<Movie> returnValue) {
+//                getCallBack().onSuccess(new ResponseValue(returnValue));
+//            }
+//
+//            @Override
+//            public void onDataNotAvailable(String error) {
+//                getCallBack().onError(error);
+//            }
+//        };
+//    }
+
+    private DataSource.LoadListOfDataCallBack<Movie> getCallback(final RequestValue requestValue, final DataType dataType) {
+        return new DataSource.LoadListOfDataCallBack<Movie>() {
             @Override
             public MovieDbRequest getRequest() {
                 return requestValue.getDbRequest();
+            }
+
+            @Override
+            public DataType getDataType() {
+                return dataType;
             }
 
             @Override

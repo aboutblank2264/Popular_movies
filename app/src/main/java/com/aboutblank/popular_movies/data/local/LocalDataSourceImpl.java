@@ -6,6 +6,9 @@ import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
 import com.aboutblank.popular_movies.data.domain.MovieItem;
 import com.aboutblank.popular_movies.data.local.domain.MovieEntity;
 import com.aboutblank.popular_movies.presentation.DatabaseReader;
+import com.aboutblank.popular_movies.presentation.model.Movie;
+import com.aboutblank.popular_movies.presentation.model.MovieReview;
+import com.aboutblank.popular_movies.presentation.model.MovieVideo;
 import com.aboutblank.popular_movies.utils.MovieUtils;
 
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ public class LocalDataSourceImpl implements LocalDataSource {
     }
 
     @Override
-    public void getHighestRatedMovies(@NonNull LoadMovieDataCallBack callBack) {
+    public void getHighestRatedMovies(@NonNull LoadListOfDataCallBack<Movie> callBack) {
         MovieDbRequest request = callBack.getRequest();
         List<MovieEntity> movieEntityList = localDatabase.highestRatedDao().getMoviesForPage(request.getPage());
 
@@ -42,7 +45,7 @@ public class LocalDataSourceImpl implements LocalDataSource {
     }
 
     @Override
-    public void getPopularMovies(@NonNull LoadMovieDataCallBack callBack) {
+    public void getPopularMovies(@NonNull LoadListOfDataCallBack<Movie> callBack) {
         MovieDbRequest request = callBack.getRequest();
         List<MovieEntity> movieEntityList = localDatabase.popularMoviesDao().getMoviesForPage(request.getPage());
 
@@ -53,15 +56,6 @@ public class LocalDataSourceImpl implements LocalDataSource {
         }
     }
 
-    @Override
-    public void getMovieReviews(@NonNull LoadMovieReviewCallBack callBack) {
-
-    }
-
-    @Override
-    public void getMovieVideos(@NonNull LoadMovieVideosCallBack callBack) {
-
-    }
 
     @Override
     public void getListOfGenres(@NonNull LoadGenreCallBack callBack) {
@@ -70,6 +64,16 @@ public class LocalDataSourceImpl implements LocalDataSource {
 
     @Override
     public void getListOfData(@NonNull LoadListOfDataCallBack<?> callBack) {
+
+    }
+
+    @Override
+    public void getMovieReviews(@NonNull LoadListOfDataCallBack<MovieReview> callBack) {
+
+    }
+
+    @Override
+    public void getMovieVideos(@NonNull LoadListOfDataCallBack<MovieVideo> callBack) {
 
     }
 
