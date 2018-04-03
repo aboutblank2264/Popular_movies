@@ -120,6 +120,18 @@ public class DetailPresenterImpl implements DetailPresenter {
 
     @Override
     public void addMovieToFavorites(@NonNull String movieId) {
+        executor.execute(addGetFavoriteUseCase,
+                new AddGetFavoriteUseCase.RequestValue(Integer.valueOf(movieId), true, true),
+                new UseCase.CallBack<AddGetFavoriteUseCase.ResponseValue>() {
+                    @Override
+                    public void onSuccess(AddGetFavoriteUseCase.ResponseValue response) {
+                        view.updateFavorite(response.isFavorite());
+                    }
 
+                    @Override
+                    public void onError(String error) {
+                        view.showError(error);
+                    }
+                });
     }
 }

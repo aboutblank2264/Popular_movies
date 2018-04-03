@@ -29,6 +29,8 @@ public interface DetailPresenter extends BasePresenter {
 
         void showVideos(List<MovieVideo> videos);
 
+        void updateFavorite(boolean favorite);
+
         void finishedLoading(boolean value);
     }
 }

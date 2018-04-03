@@ -121,14 +121,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
         return movie;
     }
 
-    public void loadPoster() {
-
-    }
-
-    public void loadBackdrop() {
-
-    }
-
     private void colorizeActionbar() {
         Bitmap bitmap = ((BitmapDrawable) poster.getDrawable()).getBitmap();
 
@@ -163,6 +155,11 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     @Override
     public void showVideos(List<MovieVideo> videos) {
         Log.d(DetailsActivity.class.getSimpleName(), "Videos: " + videos);
+    }
+
+    @Override
+    public void updateFavorite(boolean favorite) {
+        Log.d(DetailsActivity.class.getSimpleName(), "Favorite: " + favorite);
     }
 
     @Override

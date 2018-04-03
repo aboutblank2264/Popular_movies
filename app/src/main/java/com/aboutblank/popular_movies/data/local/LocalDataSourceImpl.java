@@ -84,7 +84,7 @@ public class LocalDataSourceImpl implements LocalDataSource {
 
     @Override
     public void getMovieReviews(@NonNull LoadListOfDataCallBack<MovieReview> callBack) {
-//        localDatabase.movieDao().
+
     }
 
     @Override
