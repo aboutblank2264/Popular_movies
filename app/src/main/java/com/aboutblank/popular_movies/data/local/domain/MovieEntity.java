@@ -1,26 +1,26 @@
 package com.aboutblank.popular_movies.data.local.domain;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 
 import com.aboutblank.popular_movies.data.domain.MovieItem;
+import com.aboutblank.popular_movies.utils.StringListTypeConverter;
+
+import java.util.List;
 
 @Entity(tableName = "movie_entity")
+@TypeConverters(StringListTypeConverter.class)
 public class MovieEntity {
 
     @PrimaryKey
     public int movieId;
-    @ColumnInfo(name = "popular_id")
-    public int popularId;
-    @ColumnInfo(name = "highest_id")
-    public int highestRatedId;
 
     @Embedded
     public MovieItem movieItem;
 
-    public MovieItem getMovieItem() {
-        return movieItem;
-    }
+    public boolean favorite;
+    public List<String> reviews;
+    public List<String> videoUrls;
 }

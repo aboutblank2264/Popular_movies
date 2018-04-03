@@ -21,11 +21,11 @@ public interface MovieDbServiceApi {
                                                  @Query("page") int page, @Query("region") String region);
 
     @GET("genre/movie/list")
-    Call<Genre.ListofGenres> getMovieGenres(@Query("language") String lang);
+    Call<Genre.ListOfGenres> getMovieGenres(@Query("language") String lang);
 
     @GET("/3/movie/{id}/videos")
     Call<ListOfMovieVideos> getMovieVideos(@Path("id") String movieId, @Query("language") String lang);
-    @GET("/3/movie/{id}/reviews")
+    @GET("/3/movie/{id}/getReviews")
     Call<ListOfMovieReviews> getMovieReviews(@Path("id") String movieId, @Query("language") String lang,
                                              @Query("page") int page);
 }

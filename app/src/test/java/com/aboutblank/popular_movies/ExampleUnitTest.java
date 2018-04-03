@@ -36,7 +36,7 @@ public class ExampleUnitTest {
     public void test_Gson_Converting_GenreList() {
         Gson gson = new GsonBuilder().create();
         
-        Type type = new TypeToken<Genre.ListofGenres>() {}.getType();
+        Type type = new TypeToken<Genre.ListOfGenres>() {}.getType();
 
         List<Genre> genres = gson.fromJson(genreList, type);
 

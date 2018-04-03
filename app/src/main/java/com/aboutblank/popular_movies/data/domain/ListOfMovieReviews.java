@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class  ListOfMovieReviews {
-    private int id;
+    private int movieId;
     private int page;
     @SerializedName("results")
     private List<MovieReview> reviews;
@@ -15,12 +15,12 @@ public class  ListOfMovieReviews {
     @SerializedName("total_reviews")
     private int totalReviews;
 
-    public int getId() {
-        return id;
+    public int getMovieId() {
+        return movieId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 
     public int getPage() {
@@ -58,9 +58,9 @@ public class  ListOfMovieReviews {
     @Override
     public String toString() {
         return "ListOfMovieReviews{" +
-                "id=" + id +
+                "id=" + movieId +
                 ", page=" + page +
-                ", reviews=" + reviews +
+                ", getReviews=" + reviews +
                 ", totalPages=" + totalPages +
                 ", totalReviews=" + totalReviews +
                 '}';

@@ -17,31 +17,6 @@ import java.util.List;
  */
 public interface DataSource {
 
-    interface LoadMovieDataCallBack {
-
-        MovieDbRequest getRequest();
-
-        void onDataLoaded(List<Movie> returnValue);
-
-        void onDataNotAvailable(String error);
-    }
-
-//    interface LoadMovieReviewCallBack {
-//        MovieDbRequest getRequest();
-//
-//        void onDataLoaded(List<MovieReview> reviews);
-//
-//        void onDataNotAvailable(String error);
-//    }
-//
-//    interface LoadMovieVideosCallBack {
-//        MovieDbRequest getRequest();
-//
-//        void onDataLoaded(List<MovieVideo> videos);
-//
-//        void onDataNotAvailable(String error);
-//    }
-
     interface LoadListOfDataCallBack<T> {
         MovieDbRequest getRequest();
 
@@ -60,9 +35,23 @@ public interface DataSource {
         void onDataNotAvailable(String error);
     }
 
-//    void getHighestRatedMovies(@NonNull LoadMovieDataCallBack callBack);
-//
-//    void getPopularMovies(@NonNull LoadMovieDataCallBack callBack);
+    interface AddRemoveMovieFavoritesCallBack {
+        int getMovieId();
+        boolean toUpdate();
+        boolean valueToUpdate();
+
+        void onDataLoaded(boolean isFavorite);
+
+        void onDataNotAvailable(String error);
+    }
+
+    interface CheckIfMovieIsFavoritedCallBack {
+        int getMovieId();
+
+        void onDataLoaded(boolean isFavorite);
+
+        void onDataNotAvailable(String error);
+    }
 
     void getHighestRatedMovies(@NonNull LoadListOfDataCallBack<Movie> callBack);
 
@@ -70,13 +59,13 @@ public interface DataSource {
 
     void getListOfData(@NonNull LoadListOfDataCallBack<?> callBack);
 
-//    void getMovieReviews(@NonNull LoadMovieReviewCallBack callBack);
-
     void getMovieReviews(@NonNull LoadListOfDataCallBack<MovieReview> callBack);
-
-//    void getMovieVideos(@NonNull LoadMovieVideosCallBack callBack);
 
     void getMovieVideos(@NonNull LoadListOfDataCallBack<MovieVideo> callBack);
 
     void getListOfGenres(@NonNull LoadGenreCallBack callBack);
+
+    void addMovieToFavorite(@NonNull AddRemoveMovieFavoritesCallBack callBack);
+
+    void checkIfMovieIsFavorited(@NonNull CheckIfMovieIsFavoritedCallBack callBack);
 }

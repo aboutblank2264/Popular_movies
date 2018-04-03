@@ -29,7 +29,7 @@ public class UseCaseExecutor {
     }
 
     public static UseCaseExecutor getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new UseCaseExecutor();
         }
 

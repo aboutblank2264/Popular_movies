@@ -18,6 +18,8 @@ public interface DetailPresenter extends BasePresenter {
 
     void getMovieGenres(@NonNull List<Integer> genres);
 
+    void addMovieToFavorites(@NonNull String movieId);
+
     interface View extends BaseView<DetailPresenter> {
         Movie getMovie();
 

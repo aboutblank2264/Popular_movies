@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,11 +20,12 @@ import com.aboutblank.popular_movies.UseCaseExecutor;
 import com.aboutblank.popular_movies.data.DataRepository;
 import com.aboutblank.popular_movies.presentation.DatabaseReader;
 import com.aboutblank.popular_movies.presentation.DetailPresenter;
-import com.aboutblank.popular_movies.presentation.DetailPresenterImpl;
+import com.aboutblank.popular_movies.presentation.implementation.DetailPresenterImpl;
 import com.aboutblank.popular_movies.presentation.model.DataType;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.model.MovieReview;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
+import com.aboutblank.popular_movies.presentation.usecase.AddGetFavoriteUseCase;
 import com.aboutblank.popular_movies.presentation.usecase.GetGenresUseCase;
 import com.aboutblank.popular_movies.presentation.usecase.GetListOfDataUseCase;
 import com.aboutblank.popular_movies.utils.ImageUtils;
@@ -51,6 +53,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     TextView date;
     @BindView(R.id.detail_votes)
     TextView votes;
+
+    @BindView(R.id.detail_progressBar)
+    ProgressBar progressBar;
 
     private Movie movie;
 
@@ -91,15 +96,10 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
                 new GetListOfDataUseCase<MovieReview>(dataRepository, DataType.REVIEWS),
                 new GetListOfDataUseCase<MovieVideo>(dataRepository, DataType.VIDEOS),
                 new GetGenresUseCase(dataRepository),
+                new AddGetFavoriteUseCase(dataRepository),
                 UseCaseExecutor.getInstance());
 
-        start();
-    }
-
-    private void start() {
-        presenter.getMovieGenres(movie.getGenres());
-        presenter.getMovieReviews(movie.getId());
-        presenter.getMovieVideos(movie.getId());
+        presenter.start();
     }
 
     @Override
@@ -170,11 +170,22 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
         if (value) {
             currentAmountFetchedData++;
         }
+
+        if(currentAmountFetchedData >= NUM_OF_DATA_NEEDED_TO_BE_FETCHED) {
+            showProgress(false);
+
+            Log.d(DetailsActivity.class.getSimpleName(), "Progress not showing");
+        }
     }
 
     @Override
     public void showProgress(boolean active) {
-        //TODO
+        Log.d(DetailsActivity.class.getSimpleName(), "Progress showing");
+        if (active) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override

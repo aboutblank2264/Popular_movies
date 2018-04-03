@@ -27,10 +27,10 @@ public class Genre {
                 '}';
     }
 
-    public class ListofGenres {
+    public class ListOfGenres {
         private List<Genre> genres;
 
-        public ListofGenres(List<Genre> genres) {
+        public ListOfGenres(List<Genre> genres) {
             this.genres = genres;
         }
 
@@ -40,7 +40,7 @@ public class Genre {
 
         @Override
         public String toString() {
-            return "ListofGenres{" +
+            return "ListOfGenres{" +
                     "genres=" + genres +
                     '}';
         }

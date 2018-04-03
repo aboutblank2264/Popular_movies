@@ -6,16 +6,17 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class ListOfMovieVideos {
-    private String id;
+    @SerializedName("id")
+    private String movieId;
     @SerializedName("results")
     private List<MovieVideo> videos;
 
-    public String getId() {
-        return id;
+    public String getMovieId() {
+        return movieId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
     }
 
     public List<MovieVideo> getVideos() {
@@ -29,7 +30,7 @@ public class ListOfMovieVideos {
     @Override
     public String toString() {
         return "ListOfMovieVideos{" +
-                "id='" + id + '\'' +
+                "id='" + movieId + '\'' +
                 ", videos=" + videos +
                 '}';
     }

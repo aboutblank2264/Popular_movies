@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.aboutblank.popular_movies.data.DataRepository;
 import com.aboutblank.popular_movies.presentation.DatabaseReader;
 import com.aboutblank.popular_movies.presentation.MainPresenter;
-import com.aboutblank.popular_movies.presentation.MainPresenterImpl;
+import com.aboutblank.popular_movies.presentation.implementation.MainPresenterImpl;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.ui.RecyclerViewAdapter;
 import com.aboutblank.popular_movies.presentation.usecase.GetMovieDataUseCase;
@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         recyclerViewAdapter = new RecyclerViewAdapter(getLayoutInflater(), presenter);
 
         recyclerView.setAdapter(recyclerViewAdapter);
-
 
         presenter.start();
     }

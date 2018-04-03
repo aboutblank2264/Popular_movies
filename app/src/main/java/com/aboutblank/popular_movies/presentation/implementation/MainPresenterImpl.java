@@ -1,10 +1,11 @@
-package com.aboutblank.popular_movies.presentation;
+package com.aboutblank.popular_movies.presentation.implementation;
 
 import android.support.annotation.NonNull;
 
 import com.aboutblank.popular_movies.UseCase;
 import com.aboutblank.popular_movies.UseCaseExecutor;
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
+import com.aboutblank.popular_movies.presentation.MainPresenter;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.usecase.GetMovieDataUseCase;
 
@@ -35,10 +36,6 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void start() {
-        loadData();
-    }
-
-    private void loadData() {
         view.showProgress(true);
 
         switch (view.showMovieType()) {

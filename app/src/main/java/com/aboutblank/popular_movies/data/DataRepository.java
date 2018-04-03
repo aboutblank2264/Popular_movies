@@ -190,6 +190,16 @@ public class DataRepository implements DataSource {
     }
 
     @Override
+    public void addMovieToFavorite(@NonNull AddRemoveMovieFavoritesCallBack callBack) {
+        localDataSource.addMovieToFavorite(callBack);
+    }
+
+    @Override
+    public void checkIfMovieIsFavorited(@NonNull CheckIfMovieIsFavoritedCallBack callBack) {
+        localDataSource.checkIfMovieIsFavorited(callBack);
+    }
+
+    @Override
     public void getListOfData(@NonNull LoadListOfDataCallBack callBack) {
         switch (callBack.getDataType()) {
             case REVIEWS:
