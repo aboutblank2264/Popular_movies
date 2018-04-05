@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
+import com.aboutblank.popular_movies.data.local.LocalDataSource;
 import com.aboutblank.popular_movies.data.local.LocalDataSourceImpl;
 import com.aboutblank.popular_movies.data.remote.RemoteDataSourceImpl;
 import com.aboutblank.popular_movies.presentation.DatabaseReader;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 public class DataRepository implements DataSource {
     private final DataSource remoteDataSource;
-    private final DataSource localDataSource;
+    private final LocalDataSource localDataSource;
 
     private static DataRepository instance;
 
@@ -158,11 +159,12 @@ public class DataRepository implements DataSource {
 
     @Override
     public void getListOfGenres(@NonNull final LoadGenreCallBack callBack) {
+        //Check if genres have been cached
         if (cached_genres != null) {
             callBack.onDataLoaded(cached_genres);
         } else {
-            remoteDataSource.getListOfGenres(new LoadGenreCallBack() {
-
+            //Else get from local data source
+            localDataSource.getListOfGenres(new LoadGenreCallBack() {
                 @Override
                 public String getLanguage() {
                     if (callBack.getLanguage() != null && !callBack.getLanguage().isEmpty()) {
@@ -177,8 +179,49 @@ public class DataRepository implements DataSource {
                     cached_genres = genres;
 
                     Log.d(DataRepository.class.getSimpleName(), genres.toString());
+                }
 
-                    callBack.onDataLoaded(genres);
+                @Override
+                public void onDataNotAvailable(String error) {
+                    callBack.onDataNotAvailable(error + "/n Trying to retrieve from web.");
+                }
+            });
+        }
+        if(cached_genres == null) {
+            //finally try to get from remote
+            remoteDataSource.getListOfGenres(new LoadGenreCallBack() {
+
+                @Override
+                public String getLanguage() {
+                    if (callBack.getLanguage() != null && !callBack.getLanguage().isEmpty()) {
+                        return callBack.getLanguage();
+                    } else {
+                        return "";
+                    }
+                }
+
+                @Override
+                public void onDataLoaded(final SparseArray<String> genres) {
+                    localDataSource.saveGenres(new LocalDataSource.SaveGenresCallBack() {
+                        @Override
+                        public String getLanguage() {
+                            return callBack.getLanguage();
+                        }
+
+                        @Override
+                        public SparseArray<String> getGenres() {
+                            return genres;
+                        }
+
+                        @Override
+                        public void onDataSaveFailure(String error) {
+                            callBack.onDataNotAvailable(error);
+                        }
+                    });
+                    cached_genres = genres;
+
+                    Log.d(DataRepository.class.getSimpleName(), genres.toString());
+
                 }
 
                 @Override
@@ -187,6 +230,8 @@ public class DataRepository implements DataSource {
                 }
             });
         }
+        //Finally return genres, there should be error messages propagated up already.
+        callBack.onDataLoaded(cached_genres);
     }
 
     @Override

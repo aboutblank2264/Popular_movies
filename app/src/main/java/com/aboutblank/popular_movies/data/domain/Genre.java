@@ -1,8 +1,9 @@
 package com.aboutblank.popular_movies.data.domain;
 
-import java.util.List;
+import android.arch.persistence.room.PrimaryKey;
 
 public class Genre {
+    @PrimaryKey
     private int id;
     private String name;
 
@@ -25,24 +26,5 @@ public class Genre {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
-    }
-
-    public class ListOfGenres {
-        private List<Genre> genres;
-
-        public ListOfGenres(List<Genre> genres) {
-            this.genres = genres;
-        }
-
-        public List<Genre> getGenres() {
-            return genres;
-        }
-
-        @Override
-        public String toString() {
-            return "ListOfGenres{" +
-                    "genres=" + genres +
-                    '}';
-        }
     }
 }

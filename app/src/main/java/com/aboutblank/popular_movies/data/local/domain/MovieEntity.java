@@ -23,4 +23,15 @@ public class MovieEntity {
     public boolean favorite;
     public List<String> reviews;
     public List<String> videoUrls;
+
+    @Override
+    public String toString() {
+        return "MovieEntity{" +
+                "movieId=" + movieId +
+                ", movieItem=" + movieItem +
+                ", favorite=" + favorite +
+                ", reviews=" + reviews +
+                ", videoUrls=" + videoUrls +
+                '}';
+    }
 }

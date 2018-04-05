@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aboutblank.popular_movies.data.DataSource;
-import com.aboutblank.popular_movies.data.domain.Genre;
+import com.aboutblank.popular_movies.data.domain.ListOfGenres;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieItems;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieReviews;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieVideos;
@@ -155,19 +155,19 @@ public class RemoteDataSourceImpl implements DataSource {
     @Override
     public void getListOfGenres(@NonNull final LoadGenreCallBack callBack) {
         String language = callBack.getLanguage();
-        Call<Genre.ListOfGenres> call = dbService.getMovieGenres(language);
+        Call<ListOfGenres> call = dbService.getMovieGenres(language);
 
         Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Fetching list of genres in language: " + language);
-        call.enqueue(new Callback<Genre.ListOfGenres>() {
+        call.enqueue(new Callback<ListOfGenres>() {
             @Override
-            public void onResponse(Call<Genre.ListOfGenres> call, Response<Genre.ListOfGenres> response) {
+            public void onResponse(Call<ListOfGenres> call, Response<ListOfGenres> response) {
                 if(response.body() != null) {
                     callBack.onDataLoaded(MappingUtils.ListGenreToMap(response.body().getGenres()));
                 }
             }
 
             @Override
-            public void onFailure(Call<Genre.ListOfGenres> call, Throwable t) {
+            public void onFailure(Call<ListOfGenres> call, Throwable t) {
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Load Genres response: " + call);
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
 

@@ -1,6 +1,6 @@
 package com.aboutblank.popular_movies.data.remote.retrofit;
 
-import com.aboutblank.popular_movies.data.domain.Genre;
+import com.aboutblank.popular_movies.data.domain.ListOfGenres;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieItems;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieReviews;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieVideos;
@@ -21,7 +21,7 @@ public interface MovieDbServiceApi {
                                                  @Query("page") int page, @Query("region") String region);
 
     @GET("genre/movie/list")
-    Call<Genre.ListOfGenres> getMovieGenres(@Query("language") String lang);
+    Call<ListOfGenres> getMovieGenres(@Query("language") String lang);
 
     @GET("/3/movie/{id}/videos")
     Call<ListOfMovieVideos> getMovieVideos(@Path("id") String movieId, @Query("language") String lang);

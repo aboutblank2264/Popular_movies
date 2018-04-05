@@ -1,7 +1,10 @@
 package com.aboutblank.popular_movies.data.local;
 
 import android.support.annotation.NonNull;
+import android.util.SparseArray;
 
+import com.aboutblank.popular_movies.data.domain.Genre;
+import com.aboutblank.popular_movies.data.domain.ListOfGenres;
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
 import com.aboutblank.popular_movies.data.domain.MovieItem;
 import com.aboutblank.popular_movies.data.local.domain.HighestRatedMoviesEntity;
@@ -33,6 +36,54 @@ public class LocalDataSourceImpl implements LocalDataSource {
 
     private LocalDataSourceImpl(DatabaseReader databaseReader) {
         this.localDatabase = MoviesLocalDatabase.getMoviesDatabase(databaseReader);
+    }
+
+    @Override
+    public void saveMovie(@NonNull SaveMovieCallback callback) {
+        MovieEntity entity = callback.getMovieEntity();
+
+        if(entity != null) {
+            localDatabase.movieDao().insert(entity);
+        } else {
+            callback.onDataSaveFailure("Unable to save MovieEntity, passed value: " + entity.toString());
+        }
+    }
+
+    @Override
+    public void getListOfGenres(@NonNull LoadGenreCallBack callBack) {
+        List<Genre> genreList = localDatabase.genreDao().getGenresList(callBack.getLanguage()).getGenres();
+        SparseArray<String> sparseArray = new SparseArray<>();
+
+        if(genreList.isEmpty()) {
+            callBack.onDataNotAvailable("No local genre list found.");
+        } else {
+            for (Genre genre : genreList) {
+                sparseArray.append(genre.getId(), genre.getName());
+            }
+            callBack.onDataLoaded(sparseArray);
+        }
+    }
+
+    @Override
+    public void saveGenres(@NonNull SaveGenresCallBack callBack) {
+        String language = callBack.getLanguage();
+        SparseArray<String> sparseArray = callBack.getGenres();
+
+        if(language != null && sparseArray != null) {
+            List<Genre> genreList = new ArrayList<>();
+
+            for (int i = 0; i < sparseArray.size(); i++) {
+                int key = sparseArray.keyAt(i);
+                String value = sparseArray.get(key);
+                genreList.add(new Genre(key, value));
+            }
+
+            localDatabase.genreDao().insert(new ListOfGenres(language, genreList));
+
+        } else {
+            callBack.onDataSaveFailure("Unable to save genre list, values: " +
+                    callBack.getLanguage() + ", " + callBack.getGenres());
+        }
     }
 
     @Override
@@ -71,25 +122,19 @@ public class LocalDataSourceImpl implements LocalDataSource {
         return movieItems;
     }
 
-
-    @Override
-    public void getListOfGenres(@NonNull LoadGenreCallBack callBack) {
-
-    }
-
     @Override
     public void getListOfData(@NonNull LoadListOfDataCallBack<?> callBack) {
-
+        callBack.onDataNotAvailable("Can't call this method with a local data source");
     }
 
     @Override
     public void getMovieReviews(@NonNull LoadListOfDataCallBack<MovieReview> callBack) {
-
+        callBack.onDataNotAvailable("Can't call this method with a local data source");
     }
 
     @Override
     public void getMovieVideos(@NonNull LoadListOfDataCallBack<MovieVideo> callBack) {
-
+        callBack.onDataNotAvailable("Can't call this method with a local data source");
     }
 
     @Override

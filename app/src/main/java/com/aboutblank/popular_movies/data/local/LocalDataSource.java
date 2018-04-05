@@ -1,6 +1,7 @@
 package com.aboutblank.popular_movies.data.local;
 
 import android.support.annotation.NonNull;
+import android.util.SparseArray;
 
 import com.aboutblank.popular_movies.data.DataSource;
 import com.aboutblank.popular_movies.data.local.domain.HighestRatedMoviesEntity;
@@ -13,6 +14,19 @@ public interface LocalDataSource extends DataSource {
 
     String HIGHEST_LIST_PREFIX = "h_";
     String POPULAR_LIST_PREFIX = "p_";
+
+    interface SaveMovieCallback {
+        MovieEntity getMovieEntity();
+
+        void onDataSaveFailure(String error);
+    }
+
+    interface SaveGenresCallBack {
+        String getLanguage();
+        SparseArray<String> getGenres();
+
+        void onDataSaveFailure(String error);
+    }
 
     interface SavePopularMoviesCallback {
         PopularMoviesEntity getPopularMoviesEntity();
@@ -41,6 +55,10 @@ public interface LocalDataSource extends DataSource {
 
         void onDataSaveFailure(String error);
     }
+
+    void saveMovie(@NonNull LocalDataSource.SaveMovieCallback callback);
+
+    void saveGenres(@NonNull LocalDataSource.SaveGenresCallBack callBack);
 
     void saveHighestRatedMovies(@NonNull LocalDataSource.SaveHighestRatedMoviesCallback callBack);
 
