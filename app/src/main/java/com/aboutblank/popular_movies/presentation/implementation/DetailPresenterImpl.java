@@ -23,7 +23,6 @@ public class DetailPresenterImpl implements DetailPresenter {
     private AddGetFavoriteUseCase addGetFavoriteUseCase;
     private GetGenresUseCase genresUseCase;
 
-
     public DetailPresenterImpl(@NonNull DetailPresenter.View view,
                                @NonNull GetListOfDataUseCase<MovieReview> movieReviewsUseCase,
                                @NonNull GetListOfDataUseCase<MovieVideo> videosUseCase,
@@ -66,8 +65,6 @@ public class DetailPresenterImpl implements DetailPresenter {
                     public void onSuccess(GetListOfDataUseCase.ResponseValue<MovieVideo> response) {
                         List<MovieVideo> videos = response.getPayLoad();
                         view.showVideos(videos);
-
-                        view.finishedLoading(true);
                     }
 
                     @Override
@@ -86,8 +83,6 @@ public class DetailPresenterImpl implements DetailPresenter {
                     public void onSuccess(GetListOfDataUseCase.ResponseValue<MovieReview> response) {
                         List<MovieReview> reviews = response.getPayLoad();
                         view.showReviews(reviews);
-
-                        view.finishedLoading(true);
                     }
 
                     @Override
@@ -107,8 +102,6 @@ public class DetailPresenterImpl implements DetailPresenter {
                         List<String> genres = response.getGenres();
 
                         view.showGenres(genres);
-
-                        view.finishedLoading(true);
                     }
 
                     @Override

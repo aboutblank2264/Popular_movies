@@ -164,78 +164,88 @@ public class DataRepository implements DataSource {
 
     @Override
     public void getListOfGenres(@NonNull final LoadGenreCallBack callBack) {
-        //Check if genres have been cached
+        //1. Check if genres have been cached
         if (cached_genres != null) {
-            callBack.onDataLoaded(cached_genres);
+            Log.d("Genres", "Using cached list of genres");
+            callGenreFetchedCallback(callBack);
         } else {
-            //Else get from local data source
-            localDataSource.getListOfGenres(new LoadGenreCallBack() {
-                @Override
-                public String getLanguage() {
-                    if (callBack.getLanguage() != null && !callBack.getLanguage().isEmpty()) {
-                        return callBack.getLanguage();
-                    } else {
-                        return "";
-                    }
-                }
-
-                @Override
-                public void onDataLoaded(SparseArray<String> genres) {
-                    cached_genres = genres;
-
-                    Log.d(DataRepository.class.getSimpleName(), genres.toString());
-                }
-
-                @Override
-                public void onDataNotAvailable(String error) {
-                    callBack.onDataNotAvailable(error + "/n Trying to retrieve from web.");
-                }
-            });
+            //2. Else get from local data source
+            getGenresFromLocal(callBack);
         }
-        if(cached_genres == null) {
-            //finally try to get from remote
-            remoteDataSource.getListOfGenres(new LoadGenreCallBack() {
+    }
 
-                @Override
-                public String getLanguage() {
-                    if (callBack.getLanguage() != null && !callBack.getLanguage().isEmpty()) {
+    private void getGenresFromLocal(@NonNull final LoadGenreCallBack callBack) {
+        Log.d("Genres", "Checking for local stored list of genres");
+
+        localDataSource.getListOfGenres(new LoadGenreCallBack() {
+            @Override
+            public String getLanguage() {
+                return callBack.getLanguage();
+            }
+
+            @Override
+            public void onDataLoaded(SparseArray<String> genres) {
+                cached_genres = genres;
+
+                callGenreFetchedCallback(callBack);
+            }
+
+            @Override
+            public void onDataNotAvailable(String error) {
+
+                Log.d("Genres", "No local list of genres");
+
+                //3. if local repo doesn't have the genres, fetch from remote.
+                getGenresFromRemote(callBack);
+            }
+        });
+    }
+
+    private void getGenresFromRemote(@NonNull final LoadGenreCallBack callBack) {
+
+        Log.d("Genres", "Fetching list of genres from remote");
+
+        remoteDataSource.getListOfGenres(new LoadGenreCallBack() {
+
+            @Override
+            public String getLanguage() {
+                return callBack.getLanguage();
+            }
+
+            @Override
+            public void onDataLoaded(final SparseArray<String> genres) {
+                localDataSource.saveGenres(new LocalDataSource.SaveGenresCallBack() {
+                    @Override
+                    public String getLanguage() {
                         return callBack.getLanguage();
-                    } else {
-                        return "";
                     }
-                }
 
-                @Override
-                public void onDataLoaded(final SparseArray<String> genres) {
-                    localDataSource.saveGenres(new LocalDataSource.SaveGenresCallBack() {
-                        @Override
-                        public String getLanguage() {
-                            return callBack.getLanguage();
-                        }
+                    @Override
+                    public SparseArray<String> getGenres() {
+                        return genres;
+                    }
 
-                        @Override
-                        public SparseArray<String> getGenres() {
-                            return genres;
-                        }
+                    @Override
+                    public void onDataSaveFailure(String error) {
+                        callBack.onDataNotAvailable(error);
+                    }
+                });
+                cached_genres = genres;
 
-                        @Override
-                        public void onDataSaveFailure(String error) {
-                            callBack.onDataNotAvailable(error);
-                        }
-                    });
-                    cached_genres = genres;
+                callGenreFetchedCallback(callBack);
 
-                    Log.d(DataRepository.class.getSimpleName(), genres.toString());
+                Log.d(DataRepository.class.getSimpleName(), genres.toString());
 
-                }
+            }
 
-                @Override
-                public void onDataNotAvailable(String error) {
-                    callBack.onDataNotAvailable(error);
-                }
-            });
-        }
-        //Finally return genres, there should be error messages propagated up already.
+            @Override
+            public void onDataNotAvailable(String error) {
+                callBack.onDataNotAvailable(error);
+            }
+        });
+    }
+
+    private void callGenreFetchedCallback(@NonNull LoadGenreCallBack callBack) {
         callBack.onDataLoaded(cached_genres);
     }
 

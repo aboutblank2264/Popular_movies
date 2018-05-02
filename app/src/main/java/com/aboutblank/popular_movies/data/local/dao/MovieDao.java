@@ -26,10 +26,4 @@ public interface MovieDao {
 
     @Query("SELECT favorite FROM movie_entity WHERE movieId = :id")
     boolean isFavorite(int id);
-
-    @Query("UPDATE movie_entity SET reviews = :reviews WHERE movieId = :id ")
-    void addMovieReviews(int id, List<String> reviews);
-
-    @Query("UPDATE movie_entity SET videoUrls = :videos WHERE movieId = :id ")
-    void addMovieVideos(int id, List<String> videos);
 }

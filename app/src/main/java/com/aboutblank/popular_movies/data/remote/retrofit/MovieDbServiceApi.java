@@ -29,7 +29,8 @@ public interface MovieDbServiceApi {
 
     @GET("/3/movie/{id}/videos")
     Call<ListOfMovieVideos> getMovieVideos(@Path("id") String movieId, @Query("language") String lang);
-    @GET("/3/movie/{id}/getReviews")
+
+    @GET("/3/movie/{id}/reviews")
     Call<ListOfMovieReviews> getMovieReviews(@Path("id") String movieId, @Query("language") String lang,
                                              @Query("page") int page);
 }

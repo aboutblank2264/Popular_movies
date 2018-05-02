@@ -11,12 +11,12 @@ import android.support.annotation.NonNull;
                         parentColumns = "movieId",
                         childColumns = "movieId")
         })
-public class ListOfMovies {
+public class ListOfMoviesEntity {
     @NonNull
     public final String listId;
     public final int movieId;
 
-    public ListOfMovies(@NonNull String listId, int movieId) {
+    public ListOfMoviesEntity(@NonNull String listId, int movieId) {
         this.listId = listId;
         this.movieId = movieId;
     }

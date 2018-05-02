@@ -37,8 +37,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailsActivity extends AppCompatActivity implements DetailPresenter.View {
-    private final static int NUM_OF_DATA_NEEDED_TO_BE_FETCHED = 3;
-
     @BindView(R.id.detail_poster)
     ImageView poster;
     @BindView(R.id.detail_backdrop)
@@ -58,9 +56,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     ProgressBar progressBar;
 
     private Movie movie;
-
-    private int currentAmountFetchedData = 0;
-
+    
     private DetailPresenter presenter;
 
     @Override
@@ -160,19 +156,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     @Override
     public void updateFavorite(boolean favorite) {
         Log.d(DetailsActivity.class.getSimpleName(), "Favorite: " + favorite);
-    }
-
-    @Override
-    public void finishedLoading(boolean value) {
-        if (value) {
-            currentAmountFetchedData++;
-        }
-
-        if(currentAmountFetchedData >= NUM_OF_DATA_NEEDED_TO_BE_FETCHED) {
-            showProgress(false);
-
-            Log.d(DetailsActivity.class.getSimpleName(), "Progress not showing");
-        }
     }
 
     @Override
