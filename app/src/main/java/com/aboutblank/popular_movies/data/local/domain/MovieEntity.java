@@ -24,10 +24,18 @@ public class MovieEntity {
     public List<String> reviews;
     public List<String> videoUrls;
 
+    public MovieEntity() {
+    }
+
+    public MovieEntity(int movieId, MovieItem movieItem) {
+        this.movieId = movieId;
+        this.movieItem = movieItem;
+    }
+
     @Override
     public String toString() {
         return "MovieEntity{" +
-                "movieId=" + movieId +
+                "getMovieId=" + movieId +
                 ", movieItem=" + movieItem +
                 ", favorite=" + favorite +
                 ", reviews=" + reviews +

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Movie implements Parcelable {
     private String id;
@@ -102,6 +103,21 @@ public class Movie implements Parcelable {
                 ", vote=" + vote +
                 ", genres=" + genres +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return Double.compare(movie.vote, vote) == 0 &&
+                Objects.equals(id, movie.id) &&
+                Objects.equals(title, movie.title) &&
+                Objects.equals(posterUrl, movie.posterUrl) &&
+                Objects.equals(backdrop, movie.backdrop) &&
+                Objects.equals(releaseDate, movie.releaseDate) &&
+                Objects.equals(overview, movie.overview) &&
+                Objects.equals(genres, movie.genres);
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {

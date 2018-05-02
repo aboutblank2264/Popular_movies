@@ -43,14 +43,14 @@ public interface LocalDataSource extends DataSource {
     }
 
     interface SaveReviewsToMovieCallback {
-        int movieId();
+        int getMovieId();
         List<String> getReviews();
 
         void onDataSaveFailure(String error);
     }
 
     interface SaveVideosToMovieCallback {
-        int movieId();
+        int getMovieId();
         List<String> getVideos();
 
         void onDataSaveFailure(String error);
@@ -69,4 +69,6 @@ public interface LocalDataSource extends DataSource {
     void saveMovieVideos(@NonNull LocalDataSource.SaveVideosToMovieCallback callBack);
 
     String convertPageToListId(int pageId, String prefix);
+
+    void close();
 }

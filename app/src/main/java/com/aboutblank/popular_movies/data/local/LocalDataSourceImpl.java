@@ -34,6 +34,10 @@ public class LocalDataSourceImpl implements LocalDataSource {
         return instance;
     }
 
+    public LocalDataSourceImpl(MoviesLocalDatabase moviesLocalDatabase) {
+        this.localDatabase = moviesLocalDatabase;
+    }
+
     private LocalDataSourceImpl(DatabaseReader databaseReader) {
         this.localDatabase = MoviesLocalDatabase.getMoviesDatabase(databaseReader);
     }
@@ -128,6 +132,17 @@ public class LocalDataSourceImpl implements LocalDataSource {
     }
 
     @Override
+    public void getMovie(@NonNull LoadMovieCallback callback) {
+        MovieEntity entity = localDatabase.movieDao().getMovie(callback.getMovieId());
+
+        if(entity != null && entity.movieItem != null) {
+            callback.onDataLoaded(MovieUtils.entryToMovie(entity.movieItem));
+        } else {
+            callback.onDataNotAvailable("Unable to find movie with movieId: " + callback.getMovieId());
+        }
+    }
+
+    @Override
     public void getMovieReviews(@NonNull LoadListOfDataCallBack<MovieReview> callBack) {
         callBack.onDataNotAvailable("Can't call this method with a local data source");
     }
@@ -180,16 +195,21 @@ public class LocalDataSourceImpl implements LocalDataSource {
 
     @Override
     public void saveMovieReviews(@NonNull SaveReviewsToMovieCallback callBack) {
-        localDatabase.movieDao().addMovieReviews(callBack.movieId(), callBack.getReviews());
+        localDatabase.movieDao().addMovieReviews(callBack.getMovieId(), callBack.getReviews());
     }
 
     @Override
     public void saveMovieVideos(@NonNull SaveVideosToMovieCallback callBack) {
-        localDatabase.movieDao().addMovieVideos(callBack.movieId(), callBack.getVideos());
+        localDatabase.movieDao().addMovieVideos(callBack.getMovieId(), callBack.getVideos());
     }
 
     @Override
     public String convertPageToListId(int pageId, String prefix) {
         return prefix + pageId;
+    }
+
+    @Override
+    public void close() {
+        localDatabase.close();
     }
 }

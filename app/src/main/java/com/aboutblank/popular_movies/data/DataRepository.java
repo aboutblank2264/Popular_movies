@@ -100,6 +100,11 @@ public class DataRepository implements DataSource {
     }
 
     @Override
+    public void getMovie(@NonNull LoadMovieCallback callback) {
+
+    }
+
+    @Override
     public void getMovieReviews(@NonNull final LoadListOfDataCallBack<MovieReview> callBack) {
         remoteDataSource.getMovieReviews(new LoadListOfDataCallBack<MovieReview>() {
             @Override

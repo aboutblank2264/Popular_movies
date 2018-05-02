@@ -35,6 +35,14 @@ public interface DataSource {
         void onDataNotAvailable(String error);
     }
 
+    interface LoadMovieCallback {
+        int getMovieId();
+
+        void onDataLoaded(Movie movieItem);
+
+        void onDataNotAvailable(String error);
+    }
+
     interface AddRemoveMovieFavoritesCallBack {
         int getMovieId();
         boolean toUpdate();
@@ -58,6 +66,8 @@ public interface DataSource {
     void getPopularMovies(@NonNull LoadListOfDataCallBack<Movie> callBack);
 
     void getListOfData(@NonNull LoadListOfDataCallBack<?> callBack);
+
+    void getMovie(@NonNull LoadMovieCallback callback);
 
     void getMovieReviews(@NonNull LoadListOfDataCallBack<MovieReview> callBack);
 

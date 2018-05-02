@@ -9,6 +9,7 @@ import com.aboutblank.popular_movies.data.domain.ListOfMovieItems;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieReviews;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieVideos;
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
+import com.aboutblank.popular_movies.data.domain.MovieItem;
 import com.aboutblank.popular_movies.data.remote.retrofit.MovieDbApiGenerator;
 import com.aboutblank.popular_movies.data.remote.retrofit.MovieDbServiceApi;
 import com.aboutblank.popular_movies.presentation.model.Movie;
@@ -169,6 +170,29 @@ public class RemoteDataSourceImpl implements DataSource {
             @Override
             public void onFailure(Call<ListOfGenres> call, Throwable t) {
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Load Genres response: " + call);
+                Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
+
+                callBack.onDataNotAvailable(t.getLocalizedMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getMovie(@NonNull final LoadMovieCallback callBack) {
+        Call<MovieItem> call = dbService.getMovie(callBack.getMovieId());
+
+        Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Fetching movie with id: " + callBack.getMovieId());
+        call.enqueue(new Callback<MovieItem>() {
+            @Override
+            public void onResponse(Call<MovieItem> call, Response<MovieItem> response) {
+                if(response.body() != null) {
+                    callBack.onDataLoaded(MovieUtils.entryToMovie(response.body()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieItem> call, Throwable t) {
+                Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Load movie response: " + call);
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
 
                 callBack.onDataNotAvailable(t.getLocalizedMessage());

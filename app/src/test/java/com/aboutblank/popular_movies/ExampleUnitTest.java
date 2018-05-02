@@ -1,6 +1,7 @@
 package com.aboutblank.popular_movies;
 
 import com.aboutblank.popular_movies.data.domain.Genre;
+import com.aboutblank.popular_movies.data.domain.ListOfGenres;
 import com.aboutblank.popular_movies.data.domain.MovieItem;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,7 +37,7 @@ public class ExampleUnitTest {
     public void test_Gson_Converting_GenreList() {
         Gson gson = new GsonBuilder().create();
         
-        Type type = new TypeToken<Genre.ListOfGenres>() {}.getType();
+        Type type = new TypeToken<ListOfGenres>() {}.getType();
 
         List<Genre> genres = gson.fromJson(genreList, type);
 

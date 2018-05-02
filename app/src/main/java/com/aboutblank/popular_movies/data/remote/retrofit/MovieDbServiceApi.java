@@ -4,6 +4,7 @@ import com.aboutblank.popular_movies.data.domain.ListOfGenres;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieItems;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieReviews;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieVideos;
+import com.aboutblank.popular_movies.data.domain.MovieItem;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -11,6 +12,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface MovieDbServiceApi {
+
+    @GET("movie/{id")
+    Call<MovieItem> getMovie(@Path("id") int movieId);
 
     @GET("movie/popular")
     Call<ListOfMovieItems> getPopularMovies(@Query("language") String lang,

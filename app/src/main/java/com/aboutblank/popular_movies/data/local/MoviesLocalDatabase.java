@@ -43,6 +43,12 @@ public abstract class MoviesLocalDatabase extends RoomDatabase {
         }
     }
 
+    public static MoviesLocalDatabase getTestableMoviesDatabase(DatabaseReader transporter) {
+        return Room.inMemoryDatabaseBuilder(transporter.getContext(), MoviesLocalDatabase.class)
+                .fallbackToDestructiveMigration()
+                .build();
+    }
+
     public static void destroyInstance() {
         initializedDatabase = null;
     }
