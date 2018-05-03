@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MappingUtils {
 
-    public static SparseArray<String> ListGenreToMap(List<Genre> genres) {
+    public static SparseArray<String> listGenreToMap(List<Genre> genres) {
         SparseArray<String> map = new SparseArray<>();
 
         for(Genre genre : genres) {

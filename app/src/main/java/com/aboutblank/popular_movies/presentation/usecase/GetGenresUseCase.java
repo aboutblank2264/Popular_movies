@@ -22,7 +22,11 @@ public class GetGenresUseCase extends
         dataSource.getListOfGenres(new DataSource.LoadGenreCallBack() {
             @Override
             public String getLanguage() {
-                return "";
+                if(requestValue.getLanguage() != null) {
+                    return requestValue.getLanguage();
+                } else {
+                    return "";
+                }
             }
 
             @Override
@@ -46,13 +50,19 @@ public class GetGenresUseCase extends
 
     public static class RequestValue implements UseCase.RequestValue {
         private final List<Integer> genreIds;
+        private final String language;
 
-        public RequestValue(List<Integer> genreIds) {
+        public RequestValue(List<Integer> genreIds, String language) {
             this.genreIds = genreIds;
+            this.language = language;
         }
 
         public List<Integer> getGenreIds() {
             return genreIds;
+        }
+
+        public String getLanguage() {
+            return language;
         }
     }
 

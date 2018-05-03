@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,9 +50,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     TextView date;
     @BindView(R.id.detail_votes)
     TextView votes;
-
-    @BindView(R.id.detail_progressBar)
-    ProgressBar progressBar;
 
     private Movie movie;
     
@@ -160,12 +156,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
 
     @Override
     public void showProgress(boolean active) {
-        Log.d(DetailsActivity.class.getSimpleName(), "Progress showing");
-        if (active) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-        }
+        //Do nothing
     }
 
     @Override

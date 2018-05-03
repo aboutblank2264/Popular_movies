@@ -2,12 +2,13 @@ package com.aboutblank.popular_movies.data.local;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.aboutblank.popular_movies.data.domain.Genre;
-import com.aboutblank.popular_movies.data.domain.ListOfGenres;
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
 import com.aboutblank.popular_movies.data.domain.MovieItem;
+import com.aboutblank.popular_movies.data.local.dao.GenreDao;
 import com.aboutblank.popular_movies.data.local.domain.MovieEntity;
 import com.aboutblank.popular_movies.presentation.DatabaseReader;
 import com.aboutblank.popular_movies.presentation.model.Movie;
@@ -53,20 +54,18 @@ public class LocalDataSourceImpl implements LocalDataSource {
 
     @Override
     public void getListOfGenres(@NonNull LoadGenreCallBack callBack) {
-        ListOfGenres listOfGenres = localDatabase.genreDao().getGenresList(callBack.getLanguage());
+        List<Genre> listOfGenres = localDatabase.genreDao().getGenresList(callBack.getLanguage());
 
-        if (listOfGenres != null) {
-            List<Genre> genreList = listOfGenres.getGenres();
+        if (listOfGenres != null && !listOfGenres.isEmpty()) {
+
+            Log.d("Genres", listOfGenres.toString());
+
             SparseArray<String> sparseArray = new SparseArray<>();
 
-            if (genreList.isEmpty()) {
-                callBack.onDataNotAvailable("No local genre list found.");
-            } else {
-                for (Genre genre : genreList) {
-                    sparseArray.append(genre.getId(), genre.getName());
-                }
-                callBack.onDataLoaded(sparseArray);
+            for (Genre genre : listOfGenres) {
+                sparseArray.append(genre.getId(), genre.getName());
             }
+            callBack.onDataLoaded(sparseArray);
         } else {
             callBack.onDataNotAvailable("No local list of genres.");
         }
@@ -78,42 +77,46 @@ public class LocalDataSourceImpl implements LocalDataSource {
         SparseArray<String> sparseArray = callBack.getGenres();
 
         if (language != null && sparseArray != null) {
-            List<Genre> genreList = convertSparseArrayToList(sparseArray);
+            List<Genre> genreList = convertSparseArrayToList(sparseArray, language);
 
-            ListOfGenres listOfGenres = new ListOfGenres(language, genreList);
+            Log.d("Genres", genreList.toString());
 
-            localDatabase.genreDao().insert(listOfGenres);
+//            localDatabase.genreDao().insertAll(genreList);
+            new SaveGenresAsyncTask(localDatabase.genreDao(), genreList).execute();
+
         } else {
             callBack.onDataSaveFailure("Unable to save genre list, values: " +
                     callBack.getLanguage() + ", " + callBack.getGenres());
         }
     }
 
-    private List<Genre> convertSparseArrayToList(SparseArray<String> sparseArray) {
+    private static class SaveGenresAsyncTask extends AsyncTask<Void, Void, Void> {
+        GenreDao genreDao;
+        List<Genre> genreList;
+
+        SaveGenresAsyncTask(GenreDao genreDao, List<Genre> genreList) {
+            this.genreDao = genreDao;
+            this.genreList = genreList;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            genreDao.insertAll(genreList);
+            return null;
+        }
+    }
+
+    private List<Genre> convertSparseArrayToList(SparseArray<String> sparseArray, String language) {
         List<Genre> genreList = new ArrayList<>();
 
         for (int i = 0; i < sparseArray.size(); i++) {
             int key = sparseArray.keyAt(i);
             String value = sparseArray.get(key);
-            genreList.add(new Genre(key, value));
+            genreList.add(new Genre(key, language, value));
         }
 
         return genreList;
-    }
-
-    private class SaveGenreAsyncTask extends AsyncTask<Void, Void, Void> {
-        ListOfGenres listOfGenres;
-
-        public SaveGenreAsyncTask(ListOfGenres listOfGenres) {
-            this.listOfGenres = listOfGenres;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            localDatabase.genreDao().insert(listOfGenres);
-
-            return null;
-        }
     }
 
     @Override
@@ -178,6 +181,11 @@ public class LocalDataSourceImpl implements LocalDataSource {
         boolean isFavorite = localDatabase.movieDao().isFavorite(callBack.getMovieId());
 
         callBack.onDataLoaded(isFavorite);
+    }
+
+    @Override
+    public void invalidateCaches() {
+        //Do nothing for now.
     }
 
     @Override

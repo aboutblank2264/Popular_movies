@@ -45,10 +45,7 @@ public interface DataSource {
 
     interface AddRemoveMovieFavoritesCallBack {
         int getMovieId();
-        boolean toUpdate();
         boolean valueToUpdate();
-
-        void onDataLoaded(boolean isFavorite);
 
         void onDataNotAvailable(String error);
     }
@@ -78,4 +75,6 @@ public interface DataSource {
     void addMovieToFavorite(@NonNull AddRemoveMovieFavoritesCallBack callBack);
 
     void checkIfMovieIsFavorited(@NonNull CheckIfMovieIsFavoritedCallBack callBack);
+
+    void invalidateCaches();
 }

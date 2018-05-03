@@ -42,8 +42,6 @@ public class DetailPresenterImpl implements DetailPresenter {
 
     @Override
     public void start() {
-        view.showProgress(true);
-
         Movie movie = view.getMovie();
 
         getMovieGenres(movie.getGenres());
@@ -57,14 +55,16 @@ public class DetailPresenterImpl implements DetailPresenter {
     }
 
     @Override
-    public void getMovieVideos(@NonNull String movieId) {
-        executor.execute(videosUseCase,
-                new GetListOfDataUseCase.RequestValue(new MovieDbRequest(movieId)),
-                new UseCase.CallBack<GetListOfDataUseCase.ResponseValue<MovieVideo>>() {
+    public void getMovieGenres(@NonNull List<Integer> genres) {
+        //TODO language settings.
+        executor.execute(genresUseCase,
+                new GetGenresUseCase.RequestValue(view.getMovie().getGenres(), null),
+                new UseCase.CallBack<GetGenresUseCase.ResponseValue>() {
                     @Override
-                    public void onSuccess(GetListOfDataUseCase.ResponseValue<MovieVideo> response) {
-                        List<MovieVideo> videos = response.getPayLoad();
-                        view.showVideos(videos);
+                    public void onSuccess(GetGenresUseCase.ResponseValue response) {
+                        List<String> genres = response.getGenres();
+
+                        view.showGenres(genres);
                     }
 
                     @Override
@@ -93,15 +93,14 @@ public class DetailPresenterImpl implements DetailPresenter {
     }
 
     @Override
-    public void getMovieGenres(@NonNull List<Integer> genres) {
-        executor.execute(genresUseCase,
-                new GetGenresUseCase.RequestValue(view.getMovie().getGenres()),
-                new UseCase.CallBack<GetGenresUseCase.ResponseValue>() {
+    public void getMovieVideos(@NonNull String movieId) {
+        executor.execute(videosUseCase,
+                new GetListOfDataUseCase.RequestValue(new MovieDbRequest(movieId)),
+                new UseCase.CallBack<GetListOfDataUseCase.ResponseValue<MovieVideo>>() {
                     @Override
-                    public void onSuccess(GetGenresUseCase.ResponseValue response) {
-                        List<String> genres = response.getGenres();
-
-                        view.showGenres(genres);
+                    public void onSuccess(GetListOfDataUseCase.ResponseValue<MovieVideo> response) {
+                        List<MovieVideo> videos = response.getPayLoad();
+                        view.showVideos(videos);
                     }
 
                     @Override

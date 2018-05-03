@@ -163,7 +163,7 @@ public class RemoteDataSourceImpl implements DataSource {
             @Override
             public void onResponse(Call<ListOfGenres> call, Response<ListOfGenres> response) {
                 if(response.body() != null) {
-                    callBack.onDataLoaded(MappingUtils.ListGenreToMap(response.body().getGenres()));
+                    callBack.onDataLoaded(MappingUtils.listGenreToMap(response.body().getGenres()));
                 }
             }
 
@@ -208,6 +208,11 @@ public class RemoteDataSourceImpl implements DataSource {
     @Override
     public void checkIfMovieIsFavorited(@NonNull CheckIfMovieIsFavoritedCallBack callBack) {
         callBack.onDataNotAvailable("Can't call this method with a remote data source");
+    }
+
+    @Override
+    public void invalidateCaches() {
+        //Do nothing for now
     }
 
     @Override

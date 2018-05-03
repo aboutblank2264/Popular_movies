@@ -165,8 +165,10 @@ public class DataRepository implements DataSource {
     @Override
     public void getListOfGenres(@NonNull final LoadGenreCallBack callBack) {
         //1. Check if genres have been cached
+        // doesn't check for language change, when the language is changed, cached_genres should be set to null.
         if (cached_genres != null) {
             Log.d("Genres", "Using cached list of genres");
+
             callGenreFetchedCallback(callBack);
         } else {
             //2. Else get from local data source
@@ -235,7 +237,6 @@ public class DataRepository implements DataSource {
                 callGenreFetchedCallback(callBack);
 
                 Log.d(DataRepository.class.getSimpleName(), genres.toString());
-
             }
 
             @Override
@@ -257,6 +258,11 @@ public class DataRepository implements DataSource {
     @Override
     public void checkIfMovieIsFavorited(@NonNull CheckIfMovieIsFavoritedCallBack callBack) {
         localDataSource.checkIfMovieIsFavorited(callBack);
+    }
+
+    @Override
+    public void invalidateCaches() {
+        cached_genres = null;
     }
 
     @Override
