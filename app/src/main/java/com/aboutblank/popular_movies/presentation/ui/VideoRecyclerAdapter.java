@@ -2,6 +2,7 @@ package com.aboutblank.popular_movies.presentation.ui;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,26 +13,26 @@ import com.aboutblank.popular_movies.utils.MovieUtils;
 
 import java.util.List;
 
-public class TrailerRecyclerAdapter extends RecyclerView.Adapter<TrailerViewHolder>
-        implements TrailerViewHolder.ItemClickedListener {
+public class VideoRecyclerAdapter extends RecyclerView.Adapter<VideoViewHolder>
+        implements VideoViewHolder.ItemClickedListener, AbstractRecyclerAdapter<MovieVideo> {
 
     private List<MovieVideo> movieVideoList;
     private LayoutInflater inflater;
 
-    TrailerRecyclerAdapter(@NonNull LayoutInflater inflater, @NonNull List<MovieVideo> movieVideos) {
+    VideoRecyclerAdapter(@NonNull LayoutInflater inflater, @NonNull List<MovieVideo> movieVideos) {
         this.movieVideoList = movieVideos;
         this.inflater = inflater;
     }
 
     @Override
-    public TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public VideoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.video_view_item, parent, false);
 
-        return new TrailerViewHolder(view, this);
+        return new VideoViewHolder(view, this);
     }
 
     @Override
-    public void onBindViewHolder(TrailerViewHolder holder, int position) {
+    public void onBindViewHolder(VideoViewHolder holder, int position) {
         holder.setTitle(movieVideoList.get(position).getName());
     }
 
@@ -47,4 +48,17 @@ public class TrailerRecyclerAdapter extends RecyclerView.Adapter<TrailerViewHold
         //Create intent to go to youtube.
         MovieUtils.startYoutubeIntent(inflater.getContext(), video.getId());
     }
+
+    @Override
+    public void update(@NonNull List<MovieVideo> newList) {
+        Log.d(VideoRecyclerAdapter.class.getSimpleName(), "Refreshing videos:");
+
+        movieVideoList.clear();
+        movieVideoList.addAll(newList);
+
+        Log.d(VideoRecyclerAdapter.class.getSimpleName(), movieVideoList.toString());
+
+        notifyDataSetChanged();
+    }
+
 }

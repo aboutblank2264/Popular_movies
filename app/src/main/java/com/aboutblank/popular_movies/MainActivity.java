@@ -17,7 +17,7 @@ import com.aboutblank.popular_movies.presentation.DatabaseReader;
 import com.aboutblank.popular_movies.presentation.MainPresenter;
 import com.aboutblank.popular_movies.presentation.implementation.MainPresenterImpl;
 import com.aboutblank.popular_movies.presentation.model.Movie;
-import com.aboutblank.popular_movies.presentation.ui.RecyclerViewAdapter;
+import com.aboutblank.popular_movies.presentation.ui.MovieRecyclerAdapter;
 import com.aboutblank.popular_movies.presentation.usecase.GetMovieDataUseCase;
 
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements MainPresenter.View {
 
     private MainPresenter presenter;
-    private RecyclerViewAdapter recyclerViewAdapter;
+    private MovieRecyclerAdapter movieRecyclerAdapter;
     private ProgressBar progressBar;
 
     private GetMovieDataUseCase.ListType listType = GetMovieDataUseCase.ListType.POPULAR;
@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        recyclerViewAdapter = new RecyclerViewAdapter(getLayoutInflater());
+        movieRecyclerAdapter = new MovieRecyclerAdapter(getLayoutInflater());
 
-        recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerView.setAdapter(movieRecyclerAdapter);
 
         presenter.start();
     }
@@ -104,9 +104,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void showMovies(@NonNull List<Movie> movies) {
-        recyclerViewAdapter.update(movies);
+        movieRecyclerAdapter.update(movies);
 
-        recyclerViewAdapter.notifyDataSetChanged();
+        movieRecyclerAdapter.notifyDataSetChanged();
     }
 
     private void changeMovieType(@NonNull GetMovieDataUseCase.ListType listType) {

@@ -2,6 +2,7 @@ package com.aboutblank.popular_movies.presentation.ui;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GenreRecyclerAdapter extends RecyclerView.Adapter<GenreRecyclerAdapter.GenreRecyclerViewHolder> {
+public class GenreRecyclerAdapter extends RecyclerView.Adapter<GenreRecyclerAdapter.GenreRecyclerViewHolder>
+        implements AbstractRecyclerAdapter<String> {
 
     private final LayoutInflater inflater;
     private final List<String> genres;
@@ -40,12 +42,24 @@ public class GenreRecyclerAdapter extends RecyclerView.Adapter<GenreRecyclerAdap
         return genres.size();
     }
 
-    class GenreRecyclerViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void update(@NonNull List<String> newList) {
+        Log.d(GenreRecyclerAdapter.class.getSimpleName(), "Refreshing genres:");
+
+        genres.clear();
+        genres.addAll(newList);
+
+        Log.d(GenreRecyclerAdapter.class.getSimpleName(), genres.toString());
+
+        notifyDataSetChanged();
+    }
+
+    class GenreRecyclerViewHolder extends AbstractViewHolder {
         @BindView(R.id.genre_item_textView)
         TextView textItem;
 
         public GenreRecyclerViewHolder(View view) {
-            super(view);
+            super(view, null);
             ButterKnife.bind(this, view);
         }
 

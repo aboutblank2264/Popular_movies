@@ -35,6 +35,7 @@ import com.aboutblank.popular_movies.presentation.usecase.GetListOfDataUseCase;
 import com.aboutblank.popular_movies.utils.ImageUtils;
 import com.aboutblank.popular_movies.utils.MovieUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,12 +61,15 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
 
     @BindView(R.id.detail_recycler_genres)
     RecyclerView genreRecyclerView;
+    GenreRecyclerAdapter genreRecyclerAdapter;
 
     @BindView(R.id.detail_recycler_videos)
-    RecyclerView trailerRecyclerView;
+    RecyclerView videoRecyclerView;
+    VideoRecyclerAdapter videoRecyclerAdapter;
 
     @BindView(R.id.detail_recycler_reviews)
     RecyclerView reviewRecyclerView;
+    ReviewRecyclerAdapter reviewRecyclerAdapter;
 
     private Movie movie;
 
@@ -109,17 +113,24 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
 
         presenter.start();
 
-        setFavoritOnClick();
+        setFavoriteOnClick();
+
+        genreRecyclerAdapter = new GenreRecyclerAdapter(getLayoutInflater(), new ArrayList<String>());
 
         StaggeredGridLayoutManager staggeredGridLayoutManager =
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
 
         genreRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+        genreRecyclerView.setAdapter(genreRecyclerAdapter);
 
-        trailerRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        videoRecyclerAdapter = new VideoRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieVideo>());
+        videoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        videoRecyclerView.setAdapter(videoRecyclerAdapter);
 
+        reviewRecyclerAdapter = new ReviewRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieReview>());
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        reviewRecyclerView.setAdapter(reviewRecyclerAdapter);
     }
 
     @Override
@@ -166,21 +177,21 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     public void showGenres(List<String> genres) {
         Log.d(DetailsActivity.class.getSimpleName(), "Genres: " + genres);
 
-        genreRecyclerView.setAdapter(new GenreRecyclerAdapter(getLayoutInflater(), genres));
+        genreRecyclerAdapter.update(genres);
     }
 
     @Override
     public void showReviews(List<MovieReview> reviews) {
         Log.d(DetailsActivity.class.getSimpleName(), "Reviews: " + reviews);
 
-
+        reviewRecyclerAdapter.update(reviews);
     }
 
     @Override
     public void showVideos(List<MovieVideo> videos) {
         Log.d(DetailsActivity.class.getSimpleName(), "Videos: " + videos);
 
-        trailerRecyclerView.setAdapter(new TrailerRecyclerAdapter(getLayoutInflater(), videos));
+        videoRecyclerAdapter.update(videos);
     }
 
     @Override
@@ -203,7 +214,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     /**
      * set on click for favorite button
      */
-    public void setFavoritOnClick() {
+    public void setFavoriteOnClick() {
         favorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -19,25 +19,25 @@ import java.util.List;
  * RecyclerView reference:
  * https://developer.android.com/guide/topics/ui/layout/recyclerview.html
  */
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
-        implements RecyclerViewHolder.ItemClickedListener {
+public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieViewHolder>
+        implements MovieViewHolder.ItemClickedListener, AbstractRecyclerAdapter<Movie> {
 
     private List<Movie> movieList;
     private LayoutInflater inflater;
 
-    public RecyclerViewAdapter(LayoutInflater inflater) {
+    public MovieRecyclerAdapter(LayoutInflater inflater) {
         this.movieList = new ArrayList<>();
         this.inflater = inflater;
     }
 
     @Override
-    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.recycler_view_item, parent, false);
-        return new RecyclerViewHolder(view, this);
+        return new MovieViewHolder(view, this);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(MovieViewHolder holder, int position) {
         Movie movie = movieList.get(position);
         ImageUtils.loadImageInto(inflater.getContext(), holder.getImageView(), movie.getPosterUrl());
     }
@@ -47,24 +47,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         return movieList.size();
     }
 
-    public void update(@NonNull List<Movie> newList) {
-        Log.d(RecyclerViewAdapter.class.getSimpleName(), "Refreshing listed movies:");
-
-        movieList.clear();
-        movieList.addAll(newList);
-
-        Log.d(RecyclerViewAdapter.class.getSimpleName(), movieList.toString());
-
-        notifyDataSetChanged();
-    }
-
     @Override
-    public void onItemClick(int position) {
+    public void onClicked(int position) {
         Movie movie = movieList.get(position);
         Intent intent = new Intent(inflater.getContext(), DetailsActivity.class);
 
         intent.putExtra(inflater.getContext().getString(R.string.bundle_movie), movie);
 
         inflater.getContext().startActivity(intent);
+    }
+
+    @Override
+    public void update(@NonNull List<Movie> newList) {
+        Log.d(MovieRecyclerAdapter.class.getSimpleName(), "Refreshing listed movies:");
+
+        movieList.clear();
+        movieList.addAll(newList);
+
+        Log.d(MovieRecyclerAdapter.class.getSimpleName(), movieList.toString());
+
+        notifyDataSetChanged();
     }
 }

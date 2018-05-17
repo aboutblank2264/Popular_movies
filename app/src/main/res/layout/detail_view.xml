@@ -29,10 +29,20 @@
             app:layout_constraintBottom_toBottomOf="@id/detail_backdrop"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ToggleButton
+            android:id="@+id/detail_favorite"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_favorite_toggle"
+            android:padding="8dp"
+            android:textOff=""
+            android:textOn=""
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/detail_title"
             style="@style/BoldWhiteText"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/title_height"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
@@ -40,8 +50,8 @@
             android:textSize="@dimen/header"
             app:autoSizeStepGranularity="2sp"
             app:autoSizeTextType="uniform"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/detail_favorite"/>
+            android:gravity="start"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <ImageView
             android:id="@+id/detail_poster"
@@ -51,7 +61,7 @@
             android:contentDescription="@string/movie_poster"
             android:padding="8dp"
             android:scaleType="fitXY"
-            app:layout_constraintStart_toStartOf="@id/detail_title"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/detail_title" />
 
         <TextView
@@ -61,7 +71,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/release_date"
-            android:textSize="@dimen/label"
+            android:textSize="@dimen/normal_text"
             app:layout_constraintLeft_toRightOf="@id/detail_poster"
             app:layout_constraintTop_toTopOf="@id/detail_poster" />
 
@@ -70,7 +80,7 @@
             style="@style/WhiteText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/label"
+            android:textSize="@dimen/normal_text"
             app:layout_constraintBaseline_toBaselineOf="@id/detail_date_label"
             app:layout_constraintBottom_toBottomOf="@id/detail_date_label"
             app:layout_constraintStart_toEndOf="@id/detail_date_label" />
@@ -82,7 +92,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/rating"
-            android:textSize="@dimen/label"
+            android:textSize="@dimen/normal_text"
             app:layout_constraintStart_toStartOf="@id/detail_date_label"
             app:layout_constraintTop_toBottomOf="@id/detail_date_label" />
 
@@ -91,21 +101,10 @@
             style="@style/WhiteText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/label"
+            android:textSize="@dimen/normal_text"
             app:layout_constraintBaseline_toBaselineOf="@id/detail_votes_label"
             app:layout_constraintStart_toEndOf="@id/detail_votes_label"
             app:layout_constraintTop_toTopOf="@id/detail_votes_label" />
-
-        <ToggleButton
-            android:id="@+id/detail_favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_favorite_toggle"
-            android:padding="8dp"
-            android:textOff=""
-            android:textOn=""
-            app:layout_constraintStart_toEndOf="@id/detail_date"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/detail_recycler_genres"
@@ -113,7 +112,6 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="@id/detail_backdrop"
-            app:layout_constraintEnd_toEndOf="@id/detail_backdrop"
             app:layout_constraintLeft_toLeftOf="@id/detail_votes_label"
             app:layout_constraintTop_toBottomOf="@id/detail_votes_label" />
 
@@ -134,7 +132,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:textSize="@dimen/label"
+            android:textSize="@dimen/normal_text"
             app:layout_constraintTop_toBottomOf="@id/detail_overview_label" />
 
         <TextView
@@ -156,12 +154,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/detail_video_label" />
 
+        <TextView
+            android:id="@+id/detail_review_label"
+            style="@style/BlackText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/reviews"
+            android:textSize="@dimen/description"
+            app:layout_constraintTop_toBottomOf="@id/detail_recycler_videos" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/detail_recycler_reviews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            app:layout_constraintStart_toEndOf="@id/detail_recycler_videos"/>
+            app:layout_constraintTop_toBottomOf="@id/detail_review_label"/>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
