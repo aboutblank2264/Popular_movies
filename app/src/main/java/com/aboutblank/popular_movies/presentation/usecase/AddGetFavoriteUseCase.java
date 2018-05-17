@@ -11,8 +11,9 @@ public class AddGetFavoriteUseCase extends
         this.dataSource = dataSource;
     }
 
-    public void execute(final RequestValue requestValue, boolean addToFavorites) {
-        if(addToFavorites) {
+    @Override
+    public void execute(final RequestValue requestValue) {
+        if(requestValue.valueToUpdate != null) {
             dataSource.addMovieToFavorite(new DataSource.AddRemoveMovieFavoritesCallBack() {
                 @Override
                 public int getMovieId() {
@@ -20,18 +21,8 @@ public class AddGetFavoriteUseCase extends
                 }
 
                 @Override
-                public boolean toUpdate() {
-                    return requestValue.update();
-                }
-
-                @Override
-                public boolean valueToUpdate() {
+                public Boolean valueToUpdate() {
                     return requestValue.valueToUpdate();
-                }
-
-                @Override
-                public void onDataLoaded(boolean isFavorite) {
-                    getCallBack().onSuccess(new ResponseValue(isFavorite));
                 }
 
                 @Override
@@ -59,19 +50,12 @@ public class AddGetFavoriteUseCase extends
         }
     }
 
-    @Override
-    public void execute(RequestValue requestValue) {
-        //TODO
-    }
-
     public static class RequestValue implements UseCase.RequestValue {
         private final int movieId;
-        private final boolean update;
-        private final boolean valueToUpdate;
+        private final Boolean valueToUpdate;
 
-        public RequestValue(int movieId, boolean update, boolean valueToUpdate) {
+        public RequestValue(int movieId, Boolean valueToUpdate) {
             this.movieId = movieId;
-            this.update = update;
             this.valueToUpdate = valueToUpdate;
         }
 
@@ -79,11 +63,7 @@ public class AddGetFavoriteUseCase extends
             return movieId;
         }
 
-        public boolean update() {
-            return update;
-        }
-
-        public boolean valueToUpdate() {
+        public Boolean valueToUpdate() {
             return valueToUpdate;
         }
     }

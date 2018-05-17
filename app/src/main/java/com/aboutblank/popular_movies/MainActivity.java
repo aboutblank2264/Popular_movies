@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        recyclerViewAdapter = new RecyclerViewAdapter(getLayoutInflater(), presenter);
+        recyclerViewAdapter = new RecyclerViewAdapter(getLayoutInflater());
 
         recyclerView.setAdapter(recyclerViewAdapter);
 

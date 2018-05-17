@@ -19,7 +19,7 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.
 
         this.itemClickedListener = itemClickedListener;
 
-        imageView.setOnClickListener(this);
+        view.setOnClickListener(this);
     }
 
     public ImageView getImageView() {

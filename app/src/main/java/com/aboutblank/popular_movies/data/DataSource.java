@@ -45,7 +45,7 @@ public interface DataSource {
 
     interface AddRemoveMovieFavoritesCallBack {
         int getMovieId();
-        boolean valueToUpdate();
+        Boolean valueToUpdate();
 
         void onDataNotAvailable(String error);
     }

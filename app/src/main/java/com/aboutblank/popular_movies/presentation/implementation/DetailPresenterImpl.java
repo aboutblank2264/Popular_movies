@@ -47,6 +47,8 @@ public class DetailPresenterImpl implements DetailPresenter {
         getMovieGenres(movie.getGenres());
         getMovieReviews(movie.getId());
         getMovieVideos(movie.getId());
+
+        getMovieFavorited(movie.getId());
     }
 
     @Override
@@ -111,13 +113,30 @@ public class DetailPresenterImpl implements DetailPresenter {
     }
 
     @Override
-    public void addMovieToFavorites(@NonNull String movieId) {
+    public void getMovieFavorited(@NonNull String movieId) {
         executor.execute(addGetFavoriteUseCase,
-                new AddGetFavoriteUseCase.RequestValue(Integer.valueOf(movieId), true, true),
+                new AddGetFavoriteUseCase.RequestValue(Integer.valueOf(movieId), null),
                 new UseCase.CallBack<AddGetFavoriteUseCase.ResponseValue>() {
                     @Override
                     public void onSuccess(AddGetFavoriteUseCase.ResponseValue response) {
-                        view.updateFavorite(response.isFavorite());
+                        view.showFavorite(response.isFavorite());
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        view.showError(error);
+                    }
+                });
+    }
+
+    @Override
+    public void toggleMovieFavorite(@NonNull String movieId, boolean value) {
+        executor.execute(addGetFavoriteUseCase,
+                new AddGetFavoriteUseCase.RequestValue(Integer.valueOf(movieId), value),
+                new UseCase.CallBack<AddGetFavoriteUseCase.ResponseValue>() {
+                    @Override
+                    public void onSuccess(AddGetFavoriteUseCase.ResponseValue response) {
+                        //Do nothing, UI has already been updated.
                     }
 
                     @Override

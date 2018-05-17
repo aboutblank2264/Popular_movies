@@ -12,7 +12,7 @@ public class  ListOfMovieReviews {
     private List<MovieReview> reviews;
     @SerializedName("total_pages")
     private int totalPages;
-    @SerializedName("total_reviews")
+    @SerializedName("total_results")
     private int totalReviews;
 
     public int getMovieId() {

@@ -2,6 +2,7 @@ package com.aboutblank.popular_movies.data.local.domain;
 
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
@@ -24,6 +25,7 @@ public class MovieEntity {
     public List<String> reviews;
     public List<String> videoUrls;
 
+    @Ignore
     public MovieEntity() {
     }
 

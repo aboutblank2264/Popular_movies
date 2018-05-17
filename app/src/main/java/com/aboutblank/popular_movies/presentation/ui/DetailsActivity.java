@@ -7,12 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.aboutblank.popular_movies.R;
 import com.aboutblank.popular_movies.UseCaseExecutor;
@@ -50,9 +55,20 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     TextView date;
     @BindView(R.id.detail_votes)
     TextView votes;
+    @BindView(R.id.detail_favorite)
+    ToggleButton favorite;
+
+    @BindView(R.id.detail_recycler_genres)
+    RecyclerView genreRecyclerView;
+
+    @BindView(R.id.detail_recycler_videos)
+    RecyclerView trailerRecyclerView;
+
+    @BindView(R.id.detail_recycler_reviews)
+    RecyclerView reviewRecyclerView;
 
     private Movie movie;
-    
+
     private DetailPresenter presenter;
 
     @Override
@@ -92,6 +108,18 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
                 UseCaseExecutor.getInstance());
 
         presenter.start();
+
+        setFavoritOnClick();
+
+        StaggeredGridLayoutManager staggeredGridLayoutManager =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+
+        genreRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+
+        trailerRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     @Override
@@ -137,21 +165,29 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     @Override
     public void showGenres(List<String> genres) {
         Log.d(DetailsActivity.class.getSimpleName(), "Genres: " + genres);
+
+        genreRecyclerView.setAdapter(new GenreRecyclerAdapter(getLayoutInflater(), genres));
     }
 
     @Override
     public void showReviews(List<MovieReview> reviews) {
         Log.d(DetailsActivity.class.getSimpleName(), "Reviews: " + reviews);
+
+
     }
 
     @Override
     public void showVideos(List<MovieVideo> videos) {
         Log.d(DetailsActivity.class.getSimpleName(), "Videos: " + videos);
+
+        trailerRecyclerView.setAdapter(new TrailerRecyclerAdapter(getLayoutInflater(), videos));
     }
 
     @Override
-    public void updateFavorite(boolean favorite) {
-        Log.d(DetailsActivity.class.getSimpleName(), "Favorite: " + favorite);
+    public void showFavorite(boolean isFavorite) {
+        Log.d(DetailsActivity.class.getSimpleName(), "Favorite: " + isFavorite);
+
+        favorite.setChecked(isFavorite);
     }
 
     @Override
@@ -162,5 +198,18 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     @Override
     public void showError(@NonNull String error) {
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * set on click for favorite button
+     */
+    public void setFavoritOnClick() {
+        favorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                presenter.toggleMovieFavorite(movie.getId(), isChecked);
+
+            }
+        });
     }
 }

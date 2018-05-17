@@ -33,25 +33,6 @@ public class GetMovieDataUseCase extends
         }
     }
 
-//    private DataSource.LoadMovieDataCallBack getCallback(final RequestValue requestValue) {
-//        return new DataSource.LoadMovieDataCallBack() {
-//            @Override
-//            public MovieDbRequest getRequest() {
-//                return requestValue.getDbRequest();
-//            }
-//
-//            @Override
-//            public void onDataLoaded(List<Movie> returnValue) {
-//                getCallBack().onSuccess(new ResponseValue(returnValue));
-//            }
-//
-//            @Override
-//            public void onDataNotAvailable(String error) {
-//                getCallBack().onError(error);
-//            }
-//        };
-//    }
-
     private DataSource.LoadListOfDataCallBack<Movie> getCallback(final RequestValue requestValue, final DataType dataType) {
         return new DataSource.LoadListOfDataCallBack<Movie>() {
             @Override

@@ -173,7 +173,9 @@ public class LocalDataSourceImpl implements LocalDataSource {
 
     @Override
     public void addMovieToFavorite(@NonNull AddRemoveMovieFavoritesCallBack callBack) {
-        localDatabase.movieDao().setFavorite(callBack.getMovieId(), callBack.valueToUpdate());
+        if(callBack.valueToUpdate() != null) {
+            localDatabase.movieDao().setFavorite(callBack.getMovieId(), callBack.valueToUpdate());
+        }
     }
 
     @Override

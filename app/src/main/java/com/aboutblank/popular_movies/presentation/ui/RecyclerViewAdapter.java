@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aboutblank.popular_movies.R;
-import com.aboutblank.popular_movies.presentation.MainPresenter;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.utils.ImageUtils;
 
@@ -25,12 +24,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
 
     private List<Movie> movieList;
     private LayoutInflater inflater;
-    private MainPresenter presenter;
 
-    public RecyclerViewAdapter(LayoutInflater inflater, MainPresenter presenter) {
+    public RecyclerViewAdapter(LayoutInflater inflater) {
         this.movieList = new ArrayList<>();
         this.inflater = inflater;
-        this.presenter = presenter;
     }
 
     @Override
