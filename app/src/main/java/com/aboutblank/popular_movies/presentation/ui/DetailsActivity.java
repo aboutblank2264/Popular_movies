@@ -29,6 +29,9 @@ import com.aboutblank.popular_movies.presentation.model.DataType;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.model.MovieReview;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
+import com.aboutblank.popular_movies.presentation.ui.adapters.GenreRecyclerAdapter;
+import com.aboutblank.popular_movies.presentation.ui.adapters.ReviewRecyclerAdapter;
+import com.aboutblank.popular_movies.presentation.ui.adapters.VideoRecyclerAdapter;
 import com.aboutblank.popular_movies.presentation.usecase.AddGetFavoriteUseCase;
 import com.aboutblank.popular_movies.presentation.usecase.GetGenresUseCase;
 import com.aboutblank.popular_movies.presentation.usecase.GetListOfDataUseCase;
@@ -127,6 +130,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
         videoRecyclerAdapter = new VideoRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieVideo>());
         videoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         videoRecyclerView.setAdapter(videoRecyclerAdapter);
+        videoRecyclerView.setHasFixedSize(true);
+
+        reviewRecyclerView.addItemDecoration(ReviewRecyclerAdapter.getItemDecoration(this));
 
         reviewRecyclerAdapter = new ReviewRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieReview>());
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -177,7 +183,11 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     public void showGenres(List<String> genres) {
         Log.d(DetailsActivity.class.getSimpleName(), "Genres: " + genres);
 
-        genreRecyclerAdapter.update(genres);
+        if(genres != null) {
+            genreRecyclerAdapter.update(genres);
+        } else {
+            Log.e("Genre error","Genre list is going wack: " + genres);
+        }
     }
 
     @Override
@@ -218,8 +228,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
         favorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                presenter.toggleMovieFavorite(movie.getId(), isChecked);
+                Log.d(DetailsActivity.class.getSimpleName(), "Favorite: " + isChecked);
 
+                presenter.toggleMovieFavorite(movie.getId(), isChecked);
             }
         });
     }

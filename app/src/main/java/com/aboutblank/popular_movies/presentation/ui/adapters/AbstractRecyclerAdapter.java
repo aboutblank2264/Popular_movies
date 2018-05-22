@@ -1,4 +1,4 @@
-package com.aboutblank.popular_movies.presentation.ui;
+package com.aboutblank.popular_movies.presentation.ui.adapters;
 
 import android.support.annotation.NonNull;
 

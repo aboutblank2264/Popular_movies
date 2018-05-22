@@ -1,11 +1,13 @@
-package com.aboutblank.popular_movies.presentation.ui;
+package com.aboutblank.popular_movies.presentation.ui.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.aboutblank.popular_movies.R;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
@@ -13,13 +15,16 @@ import com.aboutblank.popular_movies.utils.MovieUtils;
 
 import java.util.List;
 
-public class VideoRecyclerAdapter extends RecyclerView.Adapter<VideoViewHolder>
-        implements VideoViewHolder.ItemClickedListener, AbstractRecyclerAdapter<MovieVideo> {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class VideoRecyclerAdapter extends RecyclerView.Adapter<VideoRecyclerAdapter.VideoViewHolder>
+        implements VideoRecyclerAdapter.VideoViewHolder.ItemClickedListener, AbstractRecyclerAdapter<MovieVideo> {
 
     private List<MovieVideo> movieVideoList;
     private LayoutInflater inflater;
 
-    VideoRecyclerAdapter(@NonNull LayoutInflater inflater, @NonNull List<MovieVideo> movieVideos) {
+    public VideoRecyclerAdapter(@NonNull LayoutInflater inflater, @NonNull List<MovieVideo> movieVideos) {
         this.movieVideoList = movieVideos;
         this.inflater = inflater;
     }
@@ -61,4 +66,23 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<VideoViewHolder>
         notifyDataSetChanged();
     }
 
+    public static RecyclerView.ItemDecoration getItemDecoration(@NonNull Context context) {
+
+        return null;
+    }
+
+    class VideoViewHolder extends AbstractViewHolder {
+
+        @BindView(R.id.trailer_text_view)
+        TextView trailerTitle;
+
+        VideoViewHolder(View view, ItemClickedListener itemClickedListener) {
+            super(view, itemClickedListener);
+            ButterKnife.bind(this, view);
+        }
+
+        void setTitle(@NonNull String title) {
+            trailerTitle.setText(title);
+        }
+    }
 }

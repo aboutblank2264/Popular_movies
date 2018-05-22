@@ -17,7 +17,7 @@ import com.aboutblank.popular_movies.presentation.DatabaseReader;
 import com.aboutblank.popular_movies.presentation.MainPresenter;
 import com.aboutblank.popular_movies.presentation.implementation.MainPresenterImpl;
 import com.aboutblank.popular_movies.presentation.model.Movie;
-import com.aboutblank.popular_movies.presentation.ui.MovieRecyclerAdapter;
+import com.aboutblank.popular_movies.presentation.ui.adapters.MovieRecyclerAdapter;
 import com.aboutblank.popular_movies.presentation.usecase.GetMovieDataUseCase;
 
 import java.util.List;

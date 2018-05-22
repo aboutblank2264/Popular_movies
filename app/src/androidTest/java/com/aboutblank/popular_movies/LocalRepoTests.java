@@ -95,18 +95,8 @@ public class LocalRepoTests {
             }
 
             @Override
-            public boolean toUpdate() {
-                return false;
-            }
-
-            @Override
-            public boolean valueToUpdate() {
+            public Boolean valueToUpdate() {
                 return true;
-            }
-
-            @Override
-            public void onDataLoaded(boolean isFavorite) {
-                Assert.assertTrue(isFavorite);
             }
 
             @Override

@@ -1,4 +1,4 @@
-package com.aboutblank.popular_movies.presentation.ui;
+package com.aboutblank.popular_movies.presentation.ui.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -58,12 +58,12 @@ public class GenreRecyclerAdapter extends RecyclerView.Adapter<GenreRecyclerAdap
         @BindView(R.id.genre_item_textView)
         TextView textItem;
 
-        public GenreRecyclerViewHolder(View view) {
+        GenreRecyclerViewHolder(View view) {
             super(view, null);
             ButterKnife.bind(this, view);
         }
 
-        public void setText(@NonNull String text) {
+        void setText(@NonNull String text) {
             textItem.setText(text);
         }
     }

@@ -13,6 +13,8 @@ import com.aboutblank.popular_movies.presentation.usecase.AddGetFavoriteUseCase;
 import com.aboutblank.popular_movies.presentation.usecase.GetGenresUseCase;
 import com.aboutblank.popular_movies.presentation.usecase.GetListOfDataUseCase;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class DetailPresenterImpl implements DetailPresenter {
@@ -44,7 +46,7 @@ public class DetailPresenterImpl implements DetailPresenter {
     public void start() {
         Movie movie = view.getMovie();
 
-        getMovieGenres(movie.getGenres());
+//        getMovieGenres(movie.getGenres());
         getMovieReviews(movie.getId());
         getMovieVideos(movie.getId());
 
@@ -58,7 +60,6 @@ public class DetailPresenterImpl implements DetailPresenter {
 
     @Override
     public void getMovieGenres(@NonNull List<Integer> genres) {
-        //TODO language settings.
         executor.execute(genresUseCase,
                 new GetGenresUseCase.RequestValue(view.getMovie().getGenres(), null),
                 new UseCase.CallBack<GetGenresUseCase.ResponseValue>() {
@@ -101,7 +102,7 @@ public class DetailPresenterImpl implements DetailPresenter {
                 new UseCase.CallBack<GetListOfDataUseCase.ResponseValue<MovieVideo>>() {
                     @Override
                     public void onSuccess(GetListOfDataUseCase.ResponseValue<MovieVideo> response) {
-                        List<MovieVideo> videos = response.getPayLoad();
+                        List<MovieVideo> videos = sortListOfVideos(response.getPayLoad());
                         view.showVideos(videos);
                     }
 
@@ -110,6 +111,17 @@ public class DetailPresenterImpl implements DetailPresenter {
                         view.showError(error);
                     }
                 });
+    }
+
+    private List<MovieVideo> sortListOfVideos(@NonNull List<MovieVideo> videos) {
+        Collections.sort(videos, new Comparator<MovieVideo>() {
+            @Override
+            public int compare(MovieVideo o1, MovieVideo o2) {
+                return o1.getType().compareTo(o2.getType());
+            }
+        });
+
+        return videos;
     }
 
     @Override

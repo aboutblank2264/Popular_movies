@@ -12,7 +12,7 @@ public class MovieVideo {
     private String name;
     private String site;
     private int size;
-    private String type;
+    private VideoType type;
 
     public String getId() {
         return id;
@@ -70,11 +70,11 @@ public class MovieVideo {
         this.size = size;
     }
 
-    public String getType() {
+    public VideoType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(VideoType type) {
         this.type = type;
     }
 
@@ -91,4 +91,6 @@ public class MovieVideo {
                 ", type='" + type + '\'' +
                 '}';
     }
+
+    public enum VideoType {Trailer, Teaser, Clip, Featurette}
 }
