@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.aboutblank.popular_movies.R;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
@@ -15,11 +14,8 @@ import com.aboutblank.popular_movies.utils.MovieUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public class VideoRecyclerAdapter extends RecyclerView.Adapter<VideoRecyclerAdapter.VideoViewHolder>
-        implements VideoRecyclerAdapter.VideoViewHolder.ItemClickedListener, AbstractRecyclerAdapter<MovieVideo> {
+public class VideoRecyclerAdapter extends RecyclerView.Adapter<VideoViewHolder>
+        implements VideoViewHolder.ItemClickedListener, IRecyclerAdapter<MovieVideo> {
 
     private List<MovieVideo> movieVideoList;
     private LayoutInflater inflater;
@@ -69,20 +65,5 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<VideoRecyclerAdap
     public static RecyclerView.ItemDecoration getItemDecoration(@NonNull Context context) {
 
         return null;
-    }
-
-    class VideoViewHolder extends AbstractViewHolder {
-
-        @BindView(R.id.trailer_text_view)
-        TextView trailerTitle;
-
-        VideoViewHolder(View view, ItemClickedListener itemClickedListener) {
-            super(view, itemClickedListener);
-            ButterKnife.bind(this, view);
-        }
-
-        void setTitle(@NonNull String title) {
-            trailerTitle.setText(title);
-        }
     }
 }

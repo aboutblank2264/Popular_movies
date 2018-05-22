@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GenreRecyclerAdapter extends RecyclerView.Adapter<GenreRecyclerAdapter.GenreRecyclerViewHolder>
-        implements AbstractRecyclerAdapter<String> {
+        implements IRecyclerAdapter<String> {
 
     private final LayoutInflater inflater;
     private final List<String> genres;

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.aboutblank.popular_movies.R;
 import com.aboutblank.popular_movies.presentation.model.Movie;
@@ -17,15 +16,12 @@ import com.aboutblank.popular_movies.utils.ImageUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * RecyclerView reference:
  * https://developer.android.com/guide/topics/ui/layout/recyclerview.html
  */
-public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdapter.MovieViewHolder>
-        implements MovieRecyclerAdapter.MovieViewHolder.ItemClickedListener, AbstractRecyclerAdapter<Movie> {
+public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieViewHolder>
+        implements MovieViewHolder.ItemClickedListener, IRecyclerAdapter<Movie> {
 
     private List<Movie> movieList;
     private LayoutInflater inflater;
@@ -72,19 +68,5 @@ public class MovieRecyclerAdapter extends RecyclerView.Adapter<MovieRecyclerAdap
         Log.d(MovieRecyclerAdapter.class.getSimpleName(), movieList.toString());
 
         notifyDataSetChanged();
-    }
-
-    class MovieViewHolder extends AbstractViewHolder {
-        @BindView(R.id.item_image)
-        ImageView imageView;
-
-        MovieViewHolder(View view, ItemClickedListener itemClickedListener) {
-            super(view, itemClickedListener);
-            ButterKnife.bind(this, view);
-        }
-
-        ImageView getImageView() {
-            return imageView;
-        }
     }
 }

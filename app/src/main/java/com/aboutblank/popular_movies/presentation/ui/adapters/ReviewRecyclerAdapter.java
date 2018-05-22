@@ -1,9 +1,12 @@
 package com.aboutblank.popular_movies.presentation.ui.adapters;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.DividerItemDecoration;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -12,18 +15,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.aboutblank.popular_movies.R;
 import com.aboutblank.popular_movies.presentation.model.MovieReview;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAdapter.ReviewViewHolder>
-        implements ReviewRecyclerAdapter.ReviewViewHolder.ItemClickedListener, AbstractRecyclerAdapter<MovieReview>  {
+public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewViewHolder>
+        implements ReviewViewHolder.ItemClickedListener, IRecyclerAdapter<MovieReview> {
 
     private List<MovieReview> movieReviewList;
     private LayoutInflater inflater;
@@ -75,22 +74,38 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAd
 
 
     public static RecyclerView.ItemDecoration getItemDecoration(@NonNull Context context) {
-
-        return new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        return new ReviewDividerDeco(context);
     }
 
-    class ReviewViewHolder extends AbstractViewHolder {
-        @BindView(R.id.review_text)
-        TextView reviewText;
+    private static class ReviewDividerDeco extends RecyclerView.ItemDecoration {
+        protected Drawable divider;
 
-        ReviewViewHolder(View view, ItemClickedListener itemClickedListener) {
-            super(view, itemClickedListener);
-
-            ButterKnife.bind(this, view);
+        public ReviewDividerDeco(@NonNull Context context) {
+            divider = ContextCompat.getDrawable(context, R.drawable.line_drawable);
         }
 
-        void setReviewText(@NonNull SpannableString text) {
-            reviewText.setText(text);
+        @Override
+        public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+            int left = parent.getPaddingLeft();
+            int right = parent.getWidth() - parent.getPaddingRight();
+
+            int childCount = parent.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View child = parent.getChildAt(i);
+
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+                int top = child.getBottom() + params.bottomMargin;
+                int bottom = top + divider.getIntrinsicHeight();
+
+                divider.setBounds(left, top, right, bottom);
+                divider.draw(c);
+            }
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
         }
     }
 }
