@@ -1,6 +1,7 @@
 package com.aboutblank.popular_movies.presentation.usecase;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.aboutblank.popular_movies.UseCase;
 import com.aboutblank.popular_movies.data.DataSource;
@@ -27,6 +28,8 @@ public class GetMovieDataUseCase extends
             case HIGHEST_RATED:
                 dataSource.getHighestRatedMovies(getCallback(requestValue, DataType.HIGHEST_RATED));
                 break;
+            case FAVORITED:
+                dataSource.getFavoritedMovies(getFavoriteCallBack());
             default:
                 // Throw an error
                 break;
@@ -47,6 +50,35 @@ public class GetMovieDataUseCase extends
 
             @Override
             public void onDataLoaded(List<Movie> returnValue) {
+                getCallBack().onSuccess(new ResponseValue(returnValue));
+            }
+
+            @Override
+            public void onDataNotAvailable(String error) {
+                getCallBack().onError(error);
+            }
+        };
+    }
+
+    private DataSource.GetDataForFavoritedMoviesCallBack getFavoriteCallBack() {
+        return new DataSource.GetDataForFavoritedMoviesCallBack() {
+            private List<Integer> movieIds = null;
+
+            @Override
+            public List<Integer> getMovieIds() {
+                return movieIds;
+            }
+
+            @Override
+            public void setMovieIds(List<Integer> movieIds) {
+                this.movieIds = movieIds;
+            }
+
+            @Override
+            public void onDataLoaded(List<Movie> returnValue) {
+
+                Log.d("GetFavoriteMovies", returnValue.toString());
+
                 getCallBack().onSuccess(new ResponseValue(returnValue));
             }
 
@@ -84,6 +116,6 @@ public class GetMovieDataUseCase extends
     }
 
     public enum ListType {
-        POPULAR, HIGHEST_RATED
+        POPULAR, HIGHEST_RATED, FAVORITED
     }
 }

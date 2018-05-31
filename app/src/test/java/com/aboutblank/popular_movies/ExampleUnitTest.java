@@ -1,7 +1,5 @@
 package com.aboutblank.popular_movies;
 
-import com.aboutblank.popular_movies.data.domain.Genre;
-import com.aboutblank.popular_movies.data.domain.ListOfGenres;
 import com.aboutblank.popular_movies.data.domain.MovieItem;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
     android:layout_width = "match_parent"
-    android:layout_height = "wrap_content"
+    android:layout_height = "80dp"
+    android:background = "@color/primaryDarkColor"
+    android:gravity = "bottom"
     android:orientation = "vertical"
+    android:padding = "16dp"
+    android:theme = "@style/ThemeOverlay.AppCompat.ActionBar"
     >
 
-    <ImageView
-        android:id = "@+id/item_image"
+    <TextView
         android:layout_width = "match_parent"
         android:layout_height = "wrap_content"
-        android:adjustViewBounds = "true"
-        android:contentDescription = "@string/movie_item"
-        android:scaleType = "fitCenter"
+        android:text = "@string/app_name"
+        android:textColor = "@color/primaryTextColor"
         />
 
 </LinearLayout>

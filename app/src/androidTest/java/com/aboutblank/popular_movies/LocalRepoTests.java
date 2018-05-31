@@ -44,7 +44,7 @@ public class LocalRepoTests {
         movie1.setPopularity(6.23);
         movie1.setReleaseDate("04-18-2018");
 
-        localDataSource.saveMovie(new LocalDataSource.SaveMovieCallback() {
+        localDataSource.saveMovie(new LocalDataSource.SaveMovieCallBack() {
             @Override
             public MovieEntity getMovieEntity() {
                 return new MovieEntity(movie1.getId(), movie1);
@@ -66,7 +66,7 @@ public class LocalRepoTests {
     public void getMovie() {
 
         final List<Movie> movieList = new ArrayList<>();
-        localDataSource.getMovie(new DataSource.LoadMovieCallback() {
+        localDataSource.getMovie(new DataSource.LoadMovieCallBack() {
             @Override
             public int getMovieId() {
                 return 123;

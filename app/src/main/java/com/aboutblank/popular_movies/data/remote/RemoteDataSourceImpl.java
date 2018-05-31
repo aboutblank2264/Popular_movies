@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aboutblank.popular_movies.data.DataSource;
-import com.aboutblank.popular_movies.data.domain.ListOfGenres;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieItems;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieReviews;
 import com.aboutblank.popular_movies.data.domain.ListOfMovieVideos;
@@ -16,6 +15,11 @@ import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.model.MovieReview;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
 import com.aboutblank.popular_movies.utils.MovieUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,14 +51,14 @@ public class RemoteDataSourceImpl implements DataSource {
 
         call.enqueue(new Callback<ListOfMovieItems>() {
             @Override
-            public void onResponse(Call<ListOfMovieItems> call, Response<ListOfMovieItems> response) {
+            public void onResponse(@NonNull Call<ListOfMovieItems> call, @NonNull Response<ListOfMovieItems> response) {
 
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), response.body().toString());
                 callBack.onDataLoaded(MovieUtils.entryListToMovieList(response.body().getMovies()));
             }
 
             @Override
-            public void onFailure(Call<ListOfMovieItems> call, Throwable t) {
+            public void onFailure(@NonNull Call<ListOfMovieItems> call, @NonNull Throwable t) {
 
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Highest Movies response: " + call);
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
@@ -73,7 +77,7 @@ public class RemoteDataSourceImpl implements DataSource {
 
         call.enqueue(new Callback<ListOfMovieItems>() {
             @Override
-            public void onResponse(Call<ListOfMovieItems> call, Response<ListOfMovieItems> response) {
+            public void onResponse(@NonNull Call<ListOfMovieItems> call, @NonNull Response<ListOfMovieItems> response) {
                 if (response.body() != null) {
 
                     Log.d(RemoteDataSourceImpl.class.getSimpleName(), response.body().toString());
@@ -83,7 +87,7 @@ public class RemoteDataSourceImpl implements DataSource {
             }
 
             @Override
-            public void onFailure(Call<ListOfMovieItems> call, Throwable t) {
+            public void onFailure(@NonNull Call<ListOfMovieItems> call, @NonNull Throwable t) {
 
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Popular Movies response: " + call);
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
@@ -91,6 +95,46 @@ public class RemoteDataSourceImpl implements DataSource {
                 callBack.onDataNotAvailable(t.getLocalizedMessage());
             }
         });
+    }
+
+    @Override
+    public void getFavoritedMovies(@NonNull final GetDataForFavoritedMoviesCallBack callBack) {
+        final List<Integer> movieIds = callBack.getMovieIds();
+        final List<MovieItem> movieList = Collections.synchronizedList(new ArrayList<MovieItem>());
+
+        Call<MovieItem> call;
+        for(final int id : movieIds) {
+            call = dbService.getMovie(id);
+
+            Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Fetching movie: " + id);
+
+            call.enqueue(new Callback<MovieItem>() {
+                @Override
+                public void onResponse(@NonNull Call<MovieItem> call, @NonNull Response<MovieItem> response) {
+                    if(response.body() != null) {
+                        movieList.add(response.body());
+
+                        movieList.sort(new Comparator<MovieItem>() {
+                            @Override
+                            public int compare(MovieItem o1, MovieItem o2) {
+                                return o2.getId() - o1.getId();
+                            }
+                        });
+
+                        callBack.onDataLoaded(MovieUtils.entryListToMovieList(movieList));
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<MovieItem> call, @NonNull Throwable t) {
+
+                    Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Fetch movie response: " + call);
+                    Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
+
+                    callBack.onDataNotAvailable(t.getLocalizedMessage());
+                }
+            });
+        }
     }
 
     @Override
@@ -103,7 +147,7 @@ public class RemoteDataSourceImpl implements DataSource {
 
         call.enqueue(new Callback<ListOfMovieReviews>() {
             @Override
-            public void onResponse(Call<ListOfMovieReviews> call, Response<ListOfMovieReviews> response) {
+            public void onResponse(@NonNull Call<ListOfMovieReviews> call, @NonNull Response<ListOfMovieReviews> response) {
                 if(response.body() != null) {
 
                     Log.d(RemoteDataSourceImpl.class.getSimpleName(), response.body().toString());
@@ -113,7 +157,7 @@ public class RemoteDataSourceImpl implements DataSource {
             }
 
             @Override
-            public void onFailure(Call<ListOfMovieReviews> call, Throwable t) {
+            public void onFailure(@NonNull Call<ListOfMovieReviews> call, @NonNull Throwable t) {
 
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Fetch movie getReviews response: " + call);
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
@@ -133,7 +177,7 @@ public class RemoteDataSourceImpl implements DataSource {
 
         call.enqueue(new Callback<ListOfMovieVideos>() {
             @Override
-            public void onResponse(Call<ListOfMovieVideos> call, Response<ListOfMovieVideos> response) {
+            public void onResponse(@NonNull Call<ListOfMovieVideos> call, @NonNull Response<ListOfMovieVideos> response) {
                 if(response.body() != null) {
 
                     Log.d(RemoteDataSourceImpl.class.getSimpleName(), response.body().toString());
@@ -143,7 +187,7 @@ public class RemoteDataSourceImpl implements DataSource {
             }
 
             @Override
-            public void onFailure(Call<ListOfMovieVideos> call, Throwable t) {
+            public void onFailure(@NonNull Call<ListOfMovieVideos> call, @NonNull Throwable t) {
 
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Fetch movie videos response: " + call);
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
@@ -154,44 +198,20 @@ public class RemoteDataSourceImpl implements DataSource {
     }
 
     @Override
-    public void getListOfGenres(@NonNull final LoadGenreCallBack callBack) {
-        String language = callBack.getLanguage();
-        Call<ListOfGenres> call = dbService.getMovieGenres(language);
-
-        Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Fetching list of genres in language: " + language);
-        call.enqueue(new Callback<ListOfGenres>() {
-            @Override
-            public void onResponse(Call<ListOfGenres> call, Response<ListOfGenres> response) {
-                if(response.body() != null) {
-                    callBack.onDataLoaded(MappingUtils.listGenreToMap(response.body().getGenres()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ListOfGenres> call, Throwable t) {
-                Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Load Genres response: " + call);
-                Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
-
-                callBack.onDataNotAvailable(t.getLocalizedMessage());
-            }
-        });
-    }
-
-    @Override
-    public void getMovie(@NonNull final LoadMovieCallback callBack) {
+    public void getMovie(@NonNull final LoadMovieCallBack callBack) {
         Call<MovieItem> call = dbService.getMovie(callBack.getMovieId());
 
         Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Fetching movie with id: " + callBack.getMovieId());
         call.enqueue(new Callback<MovieItem>() {
             @Override
-            public void onResponse(Call<MovieItem> call, Response<MovieItem> response) {
+            public void onResponse(@NonNull Call<MovieItem> call, @NonNull Response<MovieItem> response) {
                 if(response.body() != null) {
                     callBack.onDataLoaded(MovieUtils.entryToMovie(response.body()));
                 }
             }
 
             @Override
-            public void onFailure(Call<MovieItem> call, Throwable t) {
+            public void onFailure(@NonNull Call<MovieItem> call, @NonNull Throwable t) {
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Load movie response: " + call);
                 Log.d(RemoteDataSourceImpl.class.getSimpleName(), "Error code: " + t);
 
@@ -208,11 +228,6 @@ public class RemoteDataSourceImpl implements DataSource {
     @Override
     public void checkIfMovieIsFavorited(@NonNull CheckIfMovieIsFavoritedCallBack callBack) {
         callBack.onDataNotAvailable("Can't call this method with a remote data source");
-    }
-
-    @Override
-    public void invalidateCaches() {
-        //Do nothing for now
     }
 
     @Override

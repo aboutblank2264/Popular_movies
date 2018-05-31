@@ -1,24 +1,28 @@
 package com.aboutblank.popular_movies.presentation.ui;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
+import com.aboutblank.popular_movies.MainActivity;
 import com.aboutblank.popular_movies.R;
 import com.aboutblank.popular_movies.UseCaseExecutor;
 import com.aboutblank.popular_movies.data.DataRepository;
@@ -29,22 +33,25 @@ import com.aboutblank.popular_movies.presentation.model.DataType;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.model.MovieReview;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
-import com.aboutblank.popular_movies.presentation.ui.adapters.GenreRecyclerAdapter;
 import com.aboutblank.popular_movies.presentation.ui.adapters.ReviewRecyclerAdapter;
 import com.aboutblank.popular_movies.presentation.ui.adapters.VideoRecyclerAdapter;
 import com.aboutblank.popular_movies.presentation.usecase.AddGetFavoriteUseCase;
-import com.aboutblank.popular_movies.presentation.usecase.GetGenresUseCase;
 import com.aboutblank.popular_movies.presentation.usecase.GetListOfDataUseCase;
+import com.aboutblank.popular_movies.presentation.usecase.GetMovieDataUseCase;
 import com.aboutblank.popular_movies.utils.ImageUtils;
 import com.aboutblank.popular_movies.utils.MovieUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailsActivity extends AppCompatActivity implements DetailPresenter.View {
+public class DetailsActivity extends AppCompatActivity implements DetailPresenter.View, NavigationView.OnNavigationItemSelectedListener {
+
+    private DrawerLayout drawerLayout;
+
     @BindView(R.id.detail_poster)
     ImageView poster;
     @BindView(R.id.detail_backdrop)
@@ -60,11 +67,13 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     @BindView(R.id.detail_votes)
     TextView votes;
     @BindView(R.id.detail_favorite)
-    ToggleButton favorite;
+    ImageButton favoriteButton;
 
-    @BindView(R.id.detail_recycler_genres)
-    RecyclerView genreRecyclerView;
-    GenreRecyclerAdapter genreRecyclerAdapter;
+    @BindDrawable(R.drawable.ic_star_white_36dp)
+    Drawable solidStar;
+
+    @BindDrawable(R.drawable.ic_star_border_white_36dp)
+    Drawable borderedStar;
 
     @BindView(R.id.detail_recycler_videos)
     RecyclerView videoRecyclerView;
@@ -76,6 +85,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
 
     private Movie movie;
 
+    private boolean isSaved;
+
     private DetailPresenter presenter;
 
     @Override
@@ -85,9 +96,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
 
         ButterKnife.bind(this);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        loadToolbarAndDrawer();
 
         movie = getIntent().getParcelableExtra(getString(R.string.bundle_movie));
         if (movie != null) {
@@ -110,7 +119,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
         new DetailPresenterImpl(this,
                 new GetListOfDataUseCase<MovieReview>(dataRepository, DataType.REVIEWS),
                 new GetListOfDataUseCase<MovieVideo>(dataRepository, DataType.VIDEOS),
-                new GetGenresUseCase(dataRepository),
                 new AddGetFavoriteUseCase(dataRepository),
                 UseCaseExecutor.getInstance());
 
@@ -118,22 +126,12 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
 
         setFavoriteOnClick();
 
-        genreRecyclerAdapter = new GenreRecyclerAdapter(getLayoutInflater(), new ArrayList<String>());
-
-        StaggeredGridLayoutManager staggeredGridLayoutManager =
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-
-        genreRecyclerView.setLayoutManager(staggeredGridLayoutManager);
-        genreRecyclerView.setAdapter(genreRecyclerAdapter);
-
         videoRecyclerAdapter = new VideoRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieVideo>());
         videoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         videoRecyclerView.setAdapter(videoRecyclerAdapter);
         videoRecyclerView.setHasFixedSize(true);
 
         reviewRecyclerView.addItemDecoration(ReviewRecyclerAdapter.getItemDecoration(this));
-
         reviewRecyclerAdapter = new ReviewRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieReview>());
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         reviewRecyclerView.setAdapter(reviewRecyclerAdapter);
@@ -165,6 +163,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
 
         int dominateColor = p.getDominantColor(getResources().getColor(R.color.primaryDarkColor));
         int darkVibrantColor = p.getDarkVibrantColor(getResources().getColor(R.color.primaryDarkColor));
+        int lightMutedColor = p.getVibrantColor(getResources().getColor(R.color.primaryLightColor));
 
         if (darkVibrantColor < dominateColor) {
             Log.d(DetailsActivity.class.getSimpleName(), "dominate color chosen");
@@ -177,17 +176,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
             getSupportActionBar().setBackgroundDrawable(
                     new ColorDrawable(dominateColor));
         }
-    }
 
-    @Override
-    public void showGenres(List<String> genres) {
-        Log.d(DetailsActivity.class.getSimpleName(), "Genres: " + genres);
-
-        if(genres != null) {
-            genreRecyclerAdapter.update(genres);
-        } else {
-            Log.e("Genre error","Genre list is going wack: " + genres);
-        }
+        favoriteButton.getBackground().setColorFilter(lightMutedColor, PorterDuff.Mode.MULTIPLY);
     }
 
     @Override
@@ -205,10 +195,16 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     }
 
     @Override
-    public void showFavorite(boolean isFavorite) {
-        Log.d(DetailsActivity.class.getSimpleName(), "Favorite: " + isFavorite);
+    public void showFavorited(boolean isSaved) {
+        Log.d(DetailsActivity.class.getSimpleName(), "Saved: " + isSaved);
 
-        favorite.setChecked(isFavorite);
+        this.isSaved = isSaved;
+
+        if (isSaved) {
+            favoriteButton.setImageDrawable(solidStar);
+        } else {
+            favoriteButton.setImageDrawable(borderedStar);
+        }
     }
 
     @Override
@@ -222,16 +218,63 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     }
 
     /**
-     * set on click for favorite button
+     * set on click for favoriteButton button
      */
     public void setFavoriteOnClick() {
-        favorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(DetailsActivity.class.getSimpleName(), "Favorite: " + isChecked);
-
-                presenter.toggleMovieFavorite(movie.getId(), isChecked);
+            public void onClick(View v) {
+                boolean tSaved = !isSaved;
+                presenter.toggleMovieFavorite(movie.getId(), tSaved);
+                showFavorited(tSaved);
             }
         });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        item.setChecked(true);
+
+        drawerLayout.closeDrawers();
+
+        Intent intent = new Intent(this, MainActivity.class);
+
+        String listType = "";
+
+        switch (item.getItemId()) {
+            case R.id.menu_popular:
+                listType = GetMovieDataUseCase.ListType.POPULAR.name();
+                break;
+            case R.id.menu_highest_rated:
+                listType = GetMovieDataUseCase.ListType.HIGHEST_RATED.name();
+                break;
+            case R.id.menu_favorited:
+                listType = GetMovieDataUseCase.ListType.FAVORITED.name();
+                break;
+        }
+
+        intent.putExtra(getString(R.string.bundle_list_type), listType);
+
+        startActivity(intent);
+
+
+        return false;
+    }
+
+    private void loadToolbarAndDrawer() {
+        drawerLayout = findViewById(R.id.detail_drawer_layout);
+
+//        Toolbar toolbar = findViewById(R.id.detail_toolbar);
+//        setSupportActionBar(toolbar);
+
+//        ActionBar actionbar = getSupportActionBar();
+//
+//        if (actionbar != null) {
+//            actionbar.setDisplayHomeAsUpEnabled(true);
+//            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+//        }
+
+        NavigationView navigationView = findViewById(R.id.detail_drawer_nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 }

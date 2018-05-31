@@ -4,22 +4,16 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 
-import com.aboutblank.popular_movies.data.domain.Genre;
-import com.aboutblank.popular_movies.data.local.dao.GenreDao;
-import com.aboutblank.popular_movies.data.local.dao.ListMovieDao;
 import com.aboutblank.popular_movies.data.local.dao.MovieDao;
-import com.aboutblank.popular_movies.data.local.domain.ListOfMoviesEntity;
 import com.aboutblank.popular_movies.data.local.domain.MovieEntity;
 import com.aboutblank.popular_movies.presentation.DatabaseReader;
 
-@Database(entities = {MovieEntity.class, Genre.class, ListOfMoviesEntity.class},
-        version = 1)
+@Database(entities = {MovieEntity.class},
+        version = 3,
+        exportSchema = false)
 public abstract class MoviesLocalDatabase extends RoomDatabase {
 
     public abstract MovieDao movieDao();
-    public abstract GenreDao genreDao();
-
-    public abstract ListMovieDao listMovieDao();
 
     private static MoviesLocalDatabase initializedDatabase;
 

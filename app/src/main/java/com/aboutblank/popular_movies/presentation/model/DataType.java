@@ -1,7 +1,7 @@
 package com.aboutblank.popular_movies.presentation.model;
 
 public enum DataType {
-    POPULAR(1), HIGHEST_RATED(2), REVIEWS(3), VIDEOS(4);
+    POPULAR(1), HIGHEST_RATED(2), REVIEWS(3), VIDEOS(4), FAVORITED(5);
 
     private int type;
 

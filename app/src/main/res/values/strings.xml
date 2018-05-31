@@ -4,7 +4,7 @@
     //Settings
     <string name="action_popular">Most Popular</string>
     <string name="action_highest_rated">Highest Rating</string>
-
+    <string name = "action_favorited">Favorited</string>
 
     <string name="image_url_start">"https://image.tmdb.org/t/p/"</string>
     <string name="default_image_size">"w185"</string>
@@ -16,10 +16,12 @@
     <string name="trailer_icon">Trailer Icon</string>
 
     <string name="bundle_movie">movie</string>
+    <string name="bundle_list_type">list_type</string>
 
     <string name="release_date">Released</string>
     <string name="rating">Rating</string>
     <string name="overview">Overview</string>
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
+    <string name = "save_button">Save button</string>
 </resources>

@@ -10,7 +10,6 @@ import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.model.MovieReview;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
 import com.aboutblank.popular_movies.presentation.usecase.AddGetFavoriteUseCase;
-import com.aboutblank.popular_movies.presentation.usecase.GetGenresUseCase;
 import com.aboutblank.popular_movies.presentation.usecase.GetListOfDataUseCase;
 
 import java.util.Collections;
@@ -23,19 +22,16 @@ public class DetailPresenterImpl implements DetailPresenter {
     private GetListOfDataUseCase<MovieReview> movieReviewsUseCase;
     private GetListOfDataUseCase<MovieVideo> videosUseCase;
     private AddGetFavoriteUseCase addGetFavoriteUseCase;
-    private GetGenresUseCase genresUseCase;
 
     public DetailPresenterImpl(@NonNull DetailPresenter.View view,
                                @NonNull GetListOfDataUseCase<MovieReview> movieReviewsUseCase,
                                @NonNull GetListOfDataUseCase<MovieVideo> videosUseCase,
-                               @NonNull GetGenresUseCase genresUseCase,
                                @NonNull AddGetFavoriteUseCase addGetFavoriteUseCase,
                                @NonNull UseCaseExecutor executor) {
         this.view = view;
         this.executor = executor;
         this.movieReviewsUseCase = movieReviewsUseCase;
         this.videosUseCase = videosUseCase;
-        this.genresUseCase = genresUseCase;
         this.addGetFavoriteUseCase = addGetFavoriteUseCase;
 
         //Allows for View to not know about presenter past constructor.
@@ -46,7 +42,6 @@ public class DetailPresenterImpl implements DetailPresenter {
     public void start() {
         Movie movie = view.getMovie();
 
-//        getMovieGenres(movie.getGenres());
         getMovieReviews(movie.getId());
         getMovieVideos(movie.getId());
 
@@ -58,24 +53,6 @@ public class DetailPresenterImpl implements DetailPresenter {
         view.showError(error);
     }
 
-    @Override
-    public void getMovieGenres(@NonNull List<Integer> genres) {
-        executor.execute(genresUseCase,
-                new GetGenresUseCase.RequestValue(view.getMovie().getGenres(), null),
-                new UseCase.CallBack<GetGenresUseCase.ResponseValue>() {
-                    @Override
-                    public void onSuccess(GetGenresUseCase.ResponseValue response) {
-                        List<String> genres = response.getGenres();
-
-                        view.showGenres(genres);
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        view.showError(error);
-                    }
-                });
-    }
 
     @Override
     public void getMovieReviews(@NonNull String movieId) {
@@ -127,11 +104,11 @@ public class DetailPresenterImpl implements DetailPresenter {
     @Override
     public void getMovieFavorited(@NonNull String movieId) {
         executor.execute(addGetFavoriteUseCase,
-                new AddGetFavoriteUseCase.RequestValue(Integer.valueOf(movieId), null),
+                new AddGetFavoriteUseCase.RequestFavoriteValue(Integer.valueOf(movieId)),
                 new UseCase.CallBack<AddGetFavoriteUseCase.ResponseValue>() {
                     @Override
                     public void onSuccess(AddGetFavoriteUseCase.ResponseValue response) {
-                        view.showFavorite(response.isFavorite());
+                        view.showFavorited(response.isFavorite());
                     }
 
                     @Override
@@ -144,7 +121,7 @@ public class DetailPresenterImpl implements DetailPresenter {
     @Override
     public void toggleMovieFavorite(@NonNull String movieId, boolean value) {
         executor.execute(addGetFavoriteUseCase,
-                new AddGetFavoriteUseCase.RequestValue(Integer.valueOf(movieId), value),
+                new AddGetFavoriteUseCase.RequestUpdateValue(Integer.valueOf(movieId), value),
                 new UseCase.CallBack<AddGetFavoriteUseCase.ResponseValue>() {
                     @Override
                     public void onSuccess(AddGetFavoriteUseCase.ResponseValue response) {

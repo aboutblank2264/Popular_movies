@@ -21,6 +21,9 @@ public interface MovieDao {
     @Query("SELECT * FROM movie_entity WHERE movieId = :movieId")
     MovieEntity getMovie(int movieId);
 
+    @Query("SELECT movieId FROM movie_entity WHERE favorite = 1")
+    List<Integer> getFavoritedMovies();
+
     @Query("UPDATE movie_entity SET favorite = :favorite WHERE movieId = :id ")
     void setFavorite(int id, boolean favorite);
 

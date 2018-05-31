@@ -2,11 +2,15 @@ package com.aboutblank.popular_movies;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -25,8 +29,13 @@ import java.util.List;
 /**
  * MVP and Clean architecture reference:
  * https://github.com/googlesamples/android-architecture/tree/todo-mvp-clean/
+ *
+ * Navigation Drawer
+ * https://developer.android.com/training/implementing-navigation/nav-drawer
  */
-public class MainActivity extends AppCompatActivity implements MainPresenter.View {
+public class MainActivity extends AppCompatActivity implements MainPresenter.View, NavigationView.OnNavigationItemSelectedListener {
+
+    private DrawerLayout drawerLayout;
 
     private MainPresenter presenter;
     private MovieRecyclerAdapter movieRecyclerAdapter;
@@ -40,6 +49,22 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         setContentView(R.layout.activity_main);
 
         progressBar = findViewById(R.id.progressBar);
+
+        showProgress(true);
+
+        Log.d("intent", getIntent().toString());
+
+        if (savedInstanceState != null) {
+            Log.d("savedInstance", savedInstanceState.getString(getString(R.string.bundle_list_type)));
+
+            listType = GetMovieDataUseCase.ListType.valueOf(savedInstanceState.getString(getString(R.string.bundle_list_type)));
+        } else if(getIntent().hasExtra(getString(R.string.bundle_list_type))) {
+            Log.d("getIntent", getIntent().getStringExtra(getString(R.string.bundle_list_type)));
+
+            listType = GetMovieDataUseCase.ListType.valueOf(getIntent().getStringExtra(getString(R.string.bundle_list_type)));
+        }
+
+        loadToolbarAndDrawer();
 
         new MainPresenterImpl(this,
                 new GetMovieDataUseCase(DataRepository.getInstance(new DatabaseReader(this))),
@@ -56,16 +81,29 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(getString(R.string.bundle_list_type), listType.name());
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
 
-        GetMovieDataUseCase.ListType selectedType;
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        item.setChecked(true);
+
+        drawerLayout.closeDrawers();
+
+        GetMovieDataUseCase.ListType selectedType = listType;
 
         switch (item.getItemId()) {
             case R.id.menu_popular:
@@ -74,13 +112,14 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             case R.id.menu_highest_rated:
                 selectedType = GetMovieDataUseCase.ListType.HIGHEST_RATED;
                 break;
-            default:
-                selectedType = listType;
+            case R.id.menu_favorited:
+                selectedType = GetMovieDataUseCase.ListType.FAVORITED;
                 break;
         }
+
         changeMovieType(selectedType);
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
@@ -109,16 +148,34 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         movieRecyclerAdapter.notifyDataSetChanged();
     }
 
-    private void changeMovieType(@NonNull GetMovieDataUseCase.ListType listType) {
-        Log.d(MainActivity.class.getSimpleName(), "Changing movie list " + listType.name());
-        if (listType != this.listType) {
-            this.listType = listType;
-        }
-        presenter.start();
-    }
-
     @Override
     public GetMovieDataUseCase.ListType showMovieType() {
         return listType;
+    }
+
+    private void changeMovieType(@NonNull GetMovieDataUseCase.ListType listType) {
+        if (listType != this.listType) {
+            Log.d(MainActivity.class.getSimpleName(), "Changing movie list " + listType.name());
+
+            this.listType = listType;
+            presenter.start();
+        }
+    }
+
+    private void loadToolbarAndDrawer() {
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionbar = getSupportActionBar();
+
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
+
+        NavigationView navigationView = findViewById(R.id.drawer_nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 }

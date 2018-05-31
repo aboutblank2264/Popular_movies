@@ -13,7 +13,6 @@ import java.util.List;
 
 public class MovieUtils {
 
-    private final static String YOUTUBE_BASE_INTENT_STRING = "vnd.youtube:";
     private final static String YOUTUBE_BASE_WEB_STRING = "https://www.youtube.com/watch?v=";
 
     public static Movie entryToMovie(@NonNull MovieItem entry) {

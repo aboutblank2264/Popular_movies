@@ -36,14 +36,15 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void start() {
-        view.showProgress(true);
-
         switch (view.showMovieType()) {
             case POPULAR:
                 loadPopularMovieData();
                 break;
             case HIGHEST_RATED:
                 loadHighestRatedMovies();
+                break;
+            case FAVORITED:
+                loadFavoriteMovies();
                 break;
             default:
                 break;
@@ -59,6 +60,12 @@ public class MainPresenterImpl implements MainPresenter {
     private void loadHighestRatedMovies() {
         executor.execute(getMovieDataUseCase,
                 new GetMovieDataUseCase.RequestValue(GetMovieDataUseCase.ListType.HIGHEST_RATED, new MovieDbRequest()),
+                getDefaultCallback());
+    }
+
+    private void loadFavoriteMovies() {
+        executor.execute(getMovieDataUseCase,
+                new GetMovieDataUseCase.RequestValue(GetMovieDataUseCase.ListType.FAVORITED, new MovieDbRequest()),
                 getDefaultCallback());
     }
 

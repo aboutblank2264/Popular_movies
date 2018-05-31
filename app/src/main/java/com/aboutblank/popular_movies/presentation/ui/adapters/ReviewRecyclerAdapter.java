@@ -77,6 +77,10 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewViewHolder
         return new ReviewDividerDeco(context);
     }
 
+    /**
+     * Code heavily borrowed from:
+     * https://medium.com/@szholdiyarov/how-to-add-divider-to-list-and-recycler-views-858344450401
+     */
     private static class ReviewDividerDeco extends RecyclerView.ItemDecoration {
         protected Drawable divider;
 

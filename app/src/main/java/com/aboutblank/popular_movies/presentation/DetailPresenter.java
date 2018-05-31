@@ -16,8 +16,6 @@ public interface DetailPresenter extends BasePresenter {
 
     void getMovieReviews(@NonNull String movieId);
 
-    void getMovieGenres(@NonNull List<Integer> genres);
-
     void getMovieFavorited(@NonNull String movieId);
 
     void toggleMovieFavorite(@NonNull String movieId, boolean value);
@@ -25,12 +23,10 @@ public interface DetailPresenter extends BasePresenter {
     interface View extends BaseView<DetailPresenter> {
         Movie getMovie();
 
-        void showGenres(List<String> genres);
-
         void showReviews(List<MovieReview> reviews);
 
         void showVideos(List<MovieVideo> videos);
 
-        void showFavorite(boolean favorite);
+        void showFavorited(boolean favorite);
     }
 }

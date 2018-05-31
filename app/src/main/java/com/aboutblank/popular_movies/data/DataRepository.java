@@ -1,8 +1,6 @@
 package com.aboutblank.popular_movies.data;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.util.SparseArray;
 
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
 import com.aboutblank.popular_movies.data.local.LocalDataSource;
@@ -25,8 +23,6 @@ public class DataRepository implements DataSource {
     private final LocalDataSource localDataSource;
 
     private static DataRepository instance;
-
-    private SparseArray<String> cached_genres;
 
     private DataRepository(DatabaseReader databaseReader) {
         this.remoteDataSource = RemoteDataSourceImpl.getInstance();
@@ -100,8 +96,39 @@ public class DataRepository implements DataSource {
     }
 
     @Override
-    public void getMovie(@NonNull LoadMovieCallback callback) {
+    public void getFavoritedMovies(@NonNull final GetDataForFavoritedMoviesCallBack callBack) {
+        localDataSource.getFavoritedMovies(new LocalDataSource.GetFavoritedMoviesCallBack() {
+            @Override
+            public void onDataLoaded(List<Integer> movieIds) {
+                callBack.setMovieIds(movieIds);
+                remoteDataSource.getFavoritedMovies(callBack);
+            }
 
+            @Override
+            public void onDataNotAvailable(String error) {
+                callBack.onDataNotAvailable(error);
+            }
+        });
+    }
+
+    @Override
+    public void getMovie(@NonNull final LoadMovieCallBack callback) {
+        localDataSource.getMovie(new LoadMovieCallBack() {
+            @Override
+            public int getMovieId() {
+                return callback.getMovieId();
+            }
+
+            @Override
+            public void onDataLoaded(Movie movieItem) {
+                callback.onDataLoaded(movieItem);
+            }
+
+            @Override
+            public void onDataNotAvailable(String error) {
+                callback.onDataNotAvailable(error);
+            }
+        });
     }
 
     @Override
@@ -163,94 +190,6 @@ public class DataRepository implements DataSource {
     }
 
     @Override
-    public void getListOfGenres(@NonNull final LoadGenreCallBack callBack) {
-        //1. Check if genres have been cached
-        // doesn't check for language change, when the language is changed, cached_genres should be set to null.
-        if (cached_genres != null) {
-            Log.d("Genres", "Using cached list of genres");
-
-            callGenreFetchedCallback(callBack);
-        } else {
-            //2. Else get from local data source
-            getGenresFromLocal(callBack);
-        }
-    }
-
-    private void getGenresFromLocal(@NonNull final LoadGenreCallBack callBack) {
-        Log.d("Genres", "Checking for local stored list of genres");
-
-        localDataSource.getListOfGenres(new LoadGenreCallBack() {
-            @Override
-            public String getLanguage() {
-                return callBack.getLanguage();
-            }
-
-            @Override
-            public void onDataLoaded(SparseArray<String> genres) {
-                cached_genres = genres;
-
-                callGenreFetchedCallback(callBack);
-            }
-
-            @Override
-            public void onDataNotAvailable(String error) {
-
-                Log.d("Genres", "No local list of genres");
-
-                //3. if local repo doesn't have the genres, fetch from remote.
-                getGenresFromRemote(callBack);
-            }
-        });
-    }
-
-    private void getGenresFromRemote(@NonNull final LoadGenreCallBack callBack) {
-
-        Log.d("Genres", "Fetching list of genres from remote");
-
-        remoteDataSource.getListOfGenres(new LoadGenreCallBack() {
-
-            @Override
-            public String getLanguage() {
-                return callBack.getLanguage();
-            }
-
-            @Override
-            public void onDataLoaded(final SparseArray<String> genres) {
-                localDataSource.saveGenres(new LocalDataSource.SaveGenresCallBack() {
-                    @Override
-                    public String getLanguage() {
-                        return callBack.getLanguage();
-                    }
-
-                    @Override
-                    public SparseArray<String> getGenres() {
-                        return genres;
-                    }
-
-                    @Override
-                    public void onDataSaveFailure(String error) {
-                        callBack.onDataNotAvailable(error);
-                    }
-                });
-                cached_genres = genres;
-
-                callGenreFetchedCallback(callBack);
-
-                Log.d(DataRepository.class.getSimpleName(), genres.toString());
-            }
-
-            @Override
-            public void onDataNotAvailable(String error) {
-                callBack.onDataNotAvailable(error);
-            }
-        });
-    }
-
-    private void callGenreFetchedCallback(@NonNull LoadGenreCallBack callBack) {
-        callBack.onDataLoaded(cached_genres);
-    }
-
-    @Override
     public void addMovieToFavorite(@NonNull AddRemoveMovieFavoritesCallBack callBack) {
         localDataSource.addMovieToFavorite(callBack);
     }
@@ -258,11 +197,6 @@ public class DataRepository implements DataSource {
     @Override
     public void checkIfMovieIsFavorited(@NonNull CheckIfMovieIsFavoritedCallBack callBack) {
         localDataSource.checkIfMovieIsFavorited(callBack);
-    }
-
-    @Override
-    public void invalidateCaches() {
-        cached_genres = null;
     }
 
     @Override

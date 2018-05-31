@@ -1,10 +1,7 @@
 package com.aboutblank.popular_movies.data.domain;
 
-import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverters;
 
-import com.aboutblank.popular_movies.utils.IntListTypeConverter;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -33,8 +30,6 @@ import java.util.List;
      "release_date": "2017-04-21"
  }
  */
-@Entity
-@TypeConverters(IntListTypeConverter.class)
 public class MovieItem {
 
     @PrimaryKey

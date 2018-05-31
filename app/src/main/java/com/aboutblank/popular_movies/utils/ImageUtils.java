@@ -32,8 +32,6 @@ public class ImageUtils {
                 imageSize +
                 movieUrl;
 
-//        Log.i(ImageUtils.class.getSimpleName(), builder.toString());
-
         return string;
     }
 }

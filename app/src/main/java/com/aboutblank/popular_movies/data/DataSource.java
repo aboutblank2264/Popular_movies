@@ -1,7 +1,6 @@
 package com.aboutblank.popular_movies.data;
 
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
 
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
 import com.aboutblank.popular_movies.presentation.model.DataType;
@@ -17,64 +16,58 @@ import java.util.List;
  */
 public interface DataSource {
 
-    interface LoadListOfDataCallBack<T> {
+    interface CallBack {
+        void onDataNotAvailable(String error);
+    }
+
+    interface LoadListOfDataCallBack<T> extends CallBack {
         MovieDbRequest getRequest();
 
         DataType getDataType();
 
         void onDataLoaded(List<T> list);
-
-        void onDataNotAvailable(String error);
     }
 
-    interface LoadGenreCallBack {
-        String getLanguage();
-
-        void onDataLoaded(SparseArray<String> genres);
-
-        void onDataNotAvailable(String error);
-    }
-
-    interface LoadMovieCallback {
+    interface LoadMovieCallBack extends CallBack {
         int getMovieId();
 
         void onDataLoaded(Movie movieItem);
-
-        void onDataNotAvailable(String error);
     }
 
-    interface AddRemoveMovieFavoritesCallBack {
+    interface AddRemoveMovieFavoritesCallBack extends CallBack {
         int getMovieId();
-        Boolean valueToUpdate();
-
-        void onDataNotAvailable(String error);
+        boolean valueToUpdate();
     }
 
-    interface CheckIfMovieIsFavoritedCallBack {
+    interface CheckIfMovieIsFavoritedCallBack extends CallBack {
         int getMovieId();
 
         void onDataLoaded(boolean isFavorite);
+    }
 
-        void onDataNotAvailable(String error);
+    interface GetDataForFavoritedMoviesCallBack extends CallBack {
+        List<Integer> getMovieIds();
+
+        void setMovieIds(List<Integer> movieIds);
+
+        void onDataLoaded(List<Movie> movies);
     }
 
     void getHighestRatedMovies(@NonNull LoadListOfDataCallBack<Movie> callBack);
 
     void getPopularMovies(@NonNull LoadListOfDataCallBack<Movie> callBack);
 
+    void getFavoritedMovies(@NonNull GetDataForFavoritedMoviesCallBack callBack);
+
     void getListOfData(@NonNull LoadListOfDataCallBack<?> callBack);
 
-    void getMovie(@NonNull LoadMovieCallback callback);
+    void getMovie(@NonNull LoadMovieCallBack callback);
 
     void getMovieReviews(@NonNull LoadListOfDataCallBack<MovieReview> callBack);
 
     void getMovieVideos(@NonNull LoadListOfDataCallBack<MovieVideo> callBack);
 
-    void getListOfGenres(@NonNull LoadGenreCallBack callBack);
-
     void addMovieToFavorite(@NonNull AddRemoveMovieFavoritesCallBack callBack);
 
     void checkIfMovieIsFavorited(@NonNull CheckIfMovieIsFavoritedCallBack callBack);
-
-    void invalidateCaches();
 }

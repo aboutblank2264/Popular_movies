@@ -13,7 +13,7 @@ public class AddGetFavoriteUseCase extends
 
     @Override
     public void execute(final RequestValue requestValue) {
-        if(requestValue.valueToUpdate != null) {
+        if(requestValue.isUpdate()) {
             dataSource.addMovieToFavorite(new DataSource.AddRemoveMovieFavoritesCallBack() {
                 @Override
                 public int getMovieId() {
@@ -21,7 +21,7 @@ public class AddGetFavoriteUseCase extends
                 }
 
                 @Override
-                public Boolean valueToUpdate() {
+                public boolean valueToUpdate() {
                     return requestValue.valueToUpdate();
                 }
 
@@ -50,20 +50,56 @@ public class AddGetFavoriteUseCase extends
         }
     }
 
-    public static class RequestValue implements UseCase.RequestValue {
-        private final int movieId;
-        private final Boolean valueToUpdate;
+    public interface RequestValue extends UseCase.RequestValue {
+        boolean isUpdate();
+        int getMovieId();
+        boolean valueToUpdate();
+    }
 
-        public RequestValue(int movieId, Boolean valueToUpdate) {
+    public static class RequestFavoriteValue implements RequestValue {
+        private final int movieId;
+
+        public RequestFavoriteValue(int movieId) {
             this.movieId = movieId;
-            this.valueToUpdate = valueToUpdate;
         }
 
+        @Override
+        public boolean isUpdate() {
+            return false;
+        }
+
+        @Override
         public int getMovieId() {
             return movieId;
         }
 
-        public Boolean valueToUpdate() {
+        @Override
+        public boolean valueToUpdate() {
+            return false;
+        }
+    }
+
+    public static class RequestUpdateValue implements RequestValue {
+        private final int movieId;
+        private final boolean valueToUpdate;
+
+        public RequestUpdateValue(int movieId, boolean valueToUpdate) {
+            this.movieId = movieId;
+            this.valueToUpdate = valueToUpdate;
+        }
+
+        @Override
+        public boolean isUpdate() {
+            return true;
+        }
+
+        @Override
+        public int getMovieId() {
+            return movieId;
+        }
+
+        @Override
+        public boolean valueToUpdate() {
             return valueToUpdate;
         }
     }
