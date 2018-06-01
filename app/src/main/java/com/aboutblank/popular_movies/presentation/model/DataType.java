@@ -1,15 +1,13 @@
 package com.aboutblank.popular_movies.presentation.model;
 
-public enum DataType {
-    POPULAR(1), HIGHEST_RATED(2), REVIEWS(3), VIDEOS(4), FAVORITED(5);
+import android.support.annotation.IntDef;
 
-    private int type;
+@IntDef({DataType.POPULAR, DataType.HIGHEST_RATED, DataType.REVIEWS, DataType.VIDEOS, DataType.FAVORITED})
+public @interface DataType {
+    int POPULAR = 1;
+    int HIGHEST_RATED = 2;
+    int REVIEWS = 3;
+    int VIDEOS = 4;
+    int FAVORITED = 5;
 
-    DataType(int type) {
-        this.type = type;
-    }
-
-    public int getType() {
-        return type;
-    }
 }

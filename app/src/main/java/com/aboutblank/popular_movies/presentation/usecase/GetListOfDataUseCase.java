@@ -10,9 +10,9 @@ import java.util.List;
 public class GetListOfDataUseCase<T> extends
         UseCase<GetListOfDataUseCase.RequestValue, GetListOfDataUseCase.ResponseValue<T>> {
     private DataSource dataSource;
-    private DataType dataType;
+    private int dataType;
 
-    public GetListOfDataUseCase(DataSource dataSource, DataType dataType) {
+    public GetListOfDataUseCase(DataSource dataSource, @DataType int dataType) {
         this.dataSource = dataSource;
         this.dataType = dataType;
     }
@@ -26,7 +26,7 @@ public class GetListOfDataUseCase<T> extends
                 }
 
                 @Override
-                public DataType getDataType() {
+                public int getDataType() {
                     return dataType;
                 }
 

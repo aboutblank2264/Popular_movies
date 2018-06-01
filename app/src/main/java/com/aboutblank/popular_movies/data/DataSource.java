@@ -3,7 +3,6 @@ package com.aboutblank.popular_movies.data;
 import android.support.annotation.NonNull;
 
 import com.aboutblank.popular_movies.data.domain.MovieDbRequest;
-import com.aboutblank.popular_movies.presentation.model.DataType;
 import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.model.MovieReview;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
@@ -23,7 +22,7 @@ public interface DataSource {
     interface LoadListOfDataCallBack<T> extends CallBack {
         MovieDbRequest getRequest();
 
-        DataType getDataType();
+        int getDataType();
 
         void onDataLoaded(List<T> list);
     }

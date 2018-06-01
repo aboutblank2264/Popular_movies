@@ -36,7 +36,7 @@ public class GetMovieDataUseCase extends
         }
     }
 
-    private DataSource.LoadListOfDataCallBack<Movie> getCallback(final RequestValue requestValue, final DataType dataType) {
+    private DataSource.LoadListOfDataCallBack<Movie> getCallback(final RequestValue requestValue, final @DataType int dataType) {
         return new DataSource.LoadListOfDataCallBack<Movie>() {
             @Override
             public MovieDbRequest getRequest() {
@@ -44,7 +44,7 @@ public class GetMovieDataUseCase extends
             }
 
             @Override
-            public DataType getDataType() {
+            public int getDataType() {
                 return dataType;
             }
 

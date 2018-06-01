@@ -64,7 +64,7 @@ public class DataRepository implements DataSource {
                 }
 
                 @Override
-                public DataType getDataType() {
+                public int getDataType() {
                     return DataType.HIGHEST_RATED;
                 }
 
@@ -101,7 +101,7 @@ public class DataRepository implements DataSource {
                 }
 
                 @Override
-                public DataType getDataType() {
+                public int getDataType() {
                     return DataType.POPULAR;
                 }
 
@@ -204,7 +204,7 @@ public class DataRepository implements DataSource {
                 }
 
                 @Override
-                public DataType getDataType() {
+                public int getDataType() {
                     return callBack.getDataType();
                 }
 
@@ -242,7 +242,7 @@ public class DataRepository implements DataSource {
                 }
 
                 @Override
-                public DataType getDataType() {
+                public int getDataType() {
                     return callBack.getDataType();
                 }
 
@@ -276,10 +276,10 @@ public class DataRepository implements DataSource {
     @Override
     public void getListOfData(@NonNull LoadListOfDataCallBack callBack) {
         switch (callBack.getDataType()) {
-            case REVIEWS:
+            case DataType.REVIEWS:
                 getMovieReviews(callBack);
                 break;
-            case VIDEOS:
+            case DataType.VIDEOS:
                 getMovieVideos(callBack);
                 break;
         }
