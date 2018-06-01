@@ -19,14 +19,14 @@
             android:layout_height = "wrap_content"
             >
 
-            <!--<android.support.v7.widget.Toolbar-->
-                <!--android:id = "@+id/detail_toolbar"-->
-                <!--android:layout_width = "match_parent"-->
-                <!--android:layout_height = "?android:attr/actionBarSize"-->
-                <!--android:background = "@color/primaryDarkColor"-->
-                <!--android:theme = "@style/ThemeOverlay.AppCompat.ActionBar"-->
-                <!--app:titleTextColor = "@color/primaryTextColor"-->
-                <!--/>-->
+            <android.support.v7.widget.Toolbar
+                android:id = "@+id/detail_toolbar"
+                android:layout_width = "match_parent"
+                android:layout_height = "?android:attr/actionBarSize"
+                android:background = "@color/primaryDarkColor"
+                android:theme = "@style/ThemeOverlay.AppCompat.ActionBar"
+                app:titleTextColor = "@color/primaryTextColor"
+                />
 
             <ImageView
                 android:id = "@+id/detail_backdrop"
@@ -36,7 +36,7 @@
                 android:contentDescription = "@string/movie_backdrop"
                 android:scaleType = "centerCrop"
                 app:layout_constraintRight_toRightOf = "parent"
-                app:layout_constraintTop_toTopOf = "parent"
+                app:layout_constraintTop_toBottomOf="@id/detail_toolbar"
                 />
 
             <View
@@ -46,7 +46,7 @@
                 android:alpha = ".8"
                 android:background = "@color/primaryColor"
                 app:layout_constraintBottom_toBottomOf = "@id/detail_backdrop"
-                app:layout_constraintTop_toTopOf = "parent"
+                app:layout_constraintTop_toTopOf = "@id/detail_backdrop"
                 />
 
             <android.support.v7.widget.AppCompatTextView
@@ -61,6 +61,7 @@
                 app:autoSizeMinTextSize = "24sp"
                 app:autoSizeStepGranularity = "2sp"
                 app:autoSizeTextType = "uniform"
+                app:layout_constraintTop_toTopOf="@id/detail_backdrop"
                 />
 
             <ImageView
@@ -197,16 +198,4 @@
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
-
-    <android.support.design.widget.NavigationView
-        android:id = "@+id/detail_drawer_nav_view"
-        android:layout_width = "200dp"
-        android:layout_height = "match_parent"
-        android:layout_gravity = "start"
-        android:background = "@color/primaryColor"
-        android:fitsSystemWindows = "true"
-        app:headerLayout = "@layout/toolbar_layout"
-        app:itemTextColor = "@color/primaryTextColor"
-        app:menu = "@menu/menu_main"
-        />
 </android.support.v4.widget.DrawerLayout>

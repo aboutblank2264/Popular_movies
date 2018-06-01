@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -257,24 +259,20 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
 
         startActivity(intent);
 
-
         return false;
     }
 
     private void loadToolbarAndDrawer() {
         drawerLayout = findViewById(R.id.detail_drawer_layout);
 
-//        Toolbar toolbar = findViewById(R.id.detail_toolbar);
-//        setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.detail_toolbar);
+        setSupportActionBar(toolbar);
 
-//        ActionBar actionbar = getSupportActionBar();
-//
-//        if (actionbar != null) {
-//            actionbar.setDisplayHomeAsUpEnabled(true);
-//            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-//        }
+        ActionBar actionbar = getSupportActionBar();
 
-        NavigationView navigationView = findViewById(R.id.detail_drawer_nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        }
     }
 }
