@@ -49,7 +49,7 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<VideoViewHolder>
         MovieVideo video = movieVideoList.get(position);
 
         //Create intent to go to youtube.
-        MovieUtils.startYoutubeIntent(inflater.getContext(), video.getId());
+        MovieUtils.startYoutubeIntent(inflater.getContext(), video.getKey());
     }
 
     @Override
