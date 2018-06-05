@@ -25,12 +25,13 @@ import com.aboutblank.popular_movies.presentation.model.Movie;
 import com.aboutblank.popular_movies.presentation.ui.adapters.MovieRecyclerAdapter;
 import com.aboutblank.popular_movies.presentation.usecase.GetMovieDataUseCase;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * MVP and Clean architecture reference:
  * https://github.com/googlesamples/android-architecture/tree/todo-mvp-clean/
- *
+ * <p>
  * Navigation Drawer
  * https://developer.android.com/training/implementing-navigation/nav-drawer
  */
@@ -40,20 +41,19 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
 
-    private Parcelable currentViewPosition;
-
     private MainPresenter presenter;
     private MovieRecyclerAdapter movieRecyclerAdapter;
 
     private GetMovieDataUseCase.ListType listType = GetMovieDataUseCase.ListType.POPULAR;
+
+    private HashMap<GetMovieDataUseCase.ListType, Parcelable> viewPositions = new HashMap<>(GetMovieDataUseCase.ListType.values().length);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Show loading screen
-        showProgress(true);
+        progressBar = findViewById(R.id.progressBar);
 
         //Set RecyclerView
         recyclerView = findViewById(R.id.recycler_view);
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             Log.d("savedInstance", savedInstanceState.getString(getString(R.string.bundle_list_type)));
 
             listType = GetMovieDataUseCase.ListType.valueOf(savedInstanceState.getString(getString(R.string.bundle_list_type)));
-        } else if(getIntent().hasExtra(getString(R.string.bundle_list_type))) {
+        } else if (getIntent().hasExtra(getString(R.string.bundle_list_type))) {
             Log.d("getIntent", getIntent().getStringExtra(getString(R.string.bundle_list_type)));
 
             listType = GetMovieDataUseCase.ListType.valueOf(getIntent().getStringExtra(getString(R.string.bundle_list_type)));
@@ -87,14 +87,17 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         super.onSaveInstanceState(outState);
         outState.putString(getString(R.string.bundle_list_type), listType.name());
 
-        outState.putParcelable(getString(R.string.bundle_main_save_position), recyclerView.getLayoutManager().onSaveInstanceState());
+//        Log.d("Saving state!", String.valueOf(recyclerView.getLayoutManager().onSaveInstanceState()));
+//        outState.putParcelable(getString(R.string.bundle_main_save_position), recyclerView.getLayoutManager().onSaveInstanceState());
+        viewPositions.put(listType, recyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putSerializable(getString(R.string.bundle_main_save_position), viewPositions);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        currentViewPosition = savedInstanceState.getParcelable(getString(R.string.bundle_main_save_position));
+//        viewPositions = (HashMap<GetMovieDataUseCase.ListType, Parcelable>) savedInstanceState.getSerializable(getString(R.string.bundle_main_save_position));
     }
 
     @Override
@@ -115,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         drawerLayout.closeDrawers();
 
         GetMovieDataUseCase.ListType selectedType = listType;
+
+        viewPositions.put(listType, recyclerView.getLayoutManager().onSaveInstanceState());
 
         switch (item.getItemId()) {
             case R.id.menu_popular:
@@ -140,8 +145,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void showProgress(boolean active) {
-        progressBar = findViewById(R.id.progressBar);
-        if (active) {
+        if (active && !progressBar.isAnimating()) {
             progressBar.setVisibility(View.VISIBLE);
         } else {
             progressBar.setVisibility(View.GONE);
@@ -157,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public void showMovies(@NonNull List<Movie> movies) {
         movieRecyclerAdapter.update(movies);
 
-        movieRecyclerAdapter.notifyDataSetChanged();
         restoreViewPosition();
     }
 
@@ -167,6 +170,10 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     private void changeMovieType(@NonNull GetMovieDataUseCase.ListType listType) {
+
+        //Remove saved position
+//        currentViewPosition = null;
+
         if (listType != this.listType) {
             Log.d(MainActivity.class.getSimpleName(), "Changing movie list " + listType.name());
 
@@ -193,8 +200,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     private void restoreViewPosition() {
-        if(currentViewPosition != null) {
-            recyclerView.getLayoutManager().onRestoreInstanceState(currentViewPosition);
+        Log.d("Saved Position " + listType, String.valueOf(viewPositions.get(listType)));
+        if (viewPositions.get(listType) != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(viewPositions.get(listType));
+        } else {
+            recyclerView.getLayoutManager().scrollToPosition(0);
         }
     }
 }

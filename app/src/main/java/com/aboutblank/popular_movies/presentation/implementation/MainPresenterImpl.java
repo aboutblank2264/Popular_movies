@@ -39,6 +39,8 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void start() {
+        view.showProgress(true);
+
         switch (view.showMovieType()) {
             case POPULAR:
                 loadPopularMovieData();

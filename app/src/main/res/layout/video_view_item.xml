@@ -11,6 +11,6 @@
         android:layout_height = "160dp"
         android:gravity = "center"
         android:scaleType = "fitXY"
-        android:contentDescription = "trailer_image" />
+        android:contentDescription = "@string/trailer_image" />
 
 </LinearLayout>

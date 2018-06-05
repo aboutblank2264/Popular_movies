@@ -25,4 +25,5 @@
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
     <string name = "save_button">Save button</string>
+    <string name = "trailer_image">trailer_image</string>
 </resources>
