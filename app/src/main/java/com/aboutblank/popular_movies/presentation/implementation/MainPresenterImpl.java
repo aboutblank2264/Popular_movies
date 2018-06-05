@@ -34,6 +34,9 @@ public class MainPresenterImpl implements MainPresenter {
 
     }
 
+    //TODO:
+    // LIVE DATA
+
     @Override
     public void start() {
         switch (view.showMovieType()) {

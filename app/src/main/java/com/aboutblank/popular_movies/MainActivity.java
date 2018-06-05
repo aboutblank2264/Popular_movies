@@ -1,6 +1,7 @@
 package com.aboutblank.popular_movies;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,10 +37,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements MainPresenter.View, NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
+    private ProgressBar progressBar;
+    private RecyclerView recyclerView;
+
+    private Parcelable currentViewPosition;
 
     private MainPresenter presenter;
     private MovieRecyclerAdapter movieRecyclerAdapter;
-    private ProgressBar progressBar;
 
     private GetMovieDataUseCase.ListType listType = GetMovieDataUseCase.ListType.POPULAR;
 
@@ -48,11 +52,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBar = findViewById(R.id.progressBar);
-
+        //Show loading screen
         showProgress(true);
 
-        Log.d("intent", getIntent().toString());
+        //Set RecyclerView
+        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         if (savedInstanceState != null) {
             Log.d("savedInstance", savedInstanceState.getString(getString(R.string.bundle_list_type)));
@@ -70,9 +75,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 new GetMovieDataUseCase(DataRepository.getInstance(new DatabaseReader(this))),
                 UseCaseExecutor.getInstance());
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-
         movieRecyclerAdapter = new MovieRecyclerAdapter(getLayoutInflater());
 
         recyclerView.setAdapter(movieRecyclerAdapter);
@@ -84,6 +86,15 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(getString(R.string.bundle_list_type), listType.name());
+
+        outState.putParcelable(getString(R.string.bundle_main_save_position), recyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        currentViewPosition = savedInstanceState.getParcelable(getString(R.string.bundle_main_save_position));
     }
 
     @Override
@@ -129,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Override
     public void showProgress(boolean active) {
+        progressBar = findViewById(R.id.progressBar);
         if (active) {
             progressBar.setVisibility(View.VISIBLE);
         } else {
@@ -146,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         movieRecyclerAdapter.update(movies);
 
         movieRecyclerAdapter.notifyDataSetChanged();
+        restoreViewPosition();
     }
 
     @Override
@@ -177,5 +190,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         NavigationView navigationView = findViewById(R.id.drawer_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void restoreViewPosition() {
+        if(currentViewPosition != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(currentViewPosition);
+        }
     }
 }

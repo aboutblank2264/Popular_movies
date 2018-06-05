@@ -102,42 +102,23 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
         loadToolbarAndDrawer();
 
         movie = getIntent().getParcelableExtra(getString(R.string.bundle_movie));
+
         if (movie != null) {
+            loadMovie(movie);
 
-            Log.d(DetailsActivity.class.getSimpleName(), movie.getOverview());
+            setFavoriteOnClick();
+            setVideoAndReviewRecyclerViews();
 
-            description.setText(movie.getOverview());
-            title.setText(movie.getTitle());
-            date.setText(movie.getReleaseDate());
-            votes.setText(MovieUtils.toPercentage(movie.getVote()));
+            DataRepository dataRepository = DataRepository.getInstance(new DatabaseReader(this));
 
-            ImageUtils.loadImageInto(this, poster, movie.getPosterUrl());
-            ImageUtils.loadBackdropImageInto(this, backdrop, movie.getBackdrop());
+            new DetailPresenterImpl(this,
+                    new GetListOfDataUseCase<MovieReview>(dataRepository, DataType.REVIEWS),
+                    new GetListOfDataUseCase<MovieVideo>(dataRepository, DataType.VIDEOS),
+                    new AddGetFavoriteUseCase(dataRepository),
+                    UseCaseExecutor.getInstance());
 
-            colorizeActionbar();
+            presenter.start();
         }
-
-        DataRepository dataRepository = DataRepository.getInstance(new DatabaseReader(this));
-
-        new DetailPresenterImpl(this,
-                new GetListOfDataUseCase<MovieReview>(dataRepository, DataType.REVIEWS),
-                new GetListOfDataUseCase<MovieVideo>(dataRepository, DataType.VIDEOS),
-                new AddGetFavoriteUseCase(dataRepository),
-                UseCaseExecutor.getInstance());
-
-        presenter.start();
-
-        setFavoriteOnClick();
-
-        videoRecyclerAdapter = new VideoRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieVideo>());
-        videoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        videoRecyclerView.setAdapter(videoRecyclerAdapter);
-        videoRecyclerView.setHasFixedSize(true);
-
-        reviewRecyclerView.addItemDecoration(ReviewRecyclerAdapter.getItemDecoration(this));
-        reviewRecyclerAdapter = new ReviewRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieReview>());
-        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        reviewRecyclerView.setAdapter(reviewRecyclerAdapter);
     }
 
     @Override
@@ -159,30 +140,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
     @Override
     public Movie getMovie() {
         return movie;
-    }
-
-    private void colorizeActionbar() {
-        Bitmap bitmap = ((BitmapDrawable) poster.getDrawable()).getBitmap();
-
-        Palette p = Palette.from(bitmap).generate();
-
-        int dominateColor = p.getDominantColor(getResources().getColor(R.color.primaryDarkColor));
-        int darkVibrantColor = p.getDarkVibrantColor(getResources().getColor(R.color.primaryDarkColor));
-        int lightMutedColor = p.getVibrantColor(getResources().getColor(R.color.primaryLightColor));
-
-        if (darkVibrantColor < dominateColor) {
-            Log.d(DetailsActivity.class.getSimpleName(), "dominate color chosen");
-            dominateColor = darkVibrantColor;
-        }
-
-        shader.setBackgroundColor(dominateColor);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setBackgroundDrawable(
-                    new ColorDrawable(dominateColor));
-        }
-
-        favoriteButton.getBackground().setColorFilter(lightMutedColor, PorterDuff.Mode.MULTIPLY);
     }
 
     @Override
@@ -222,20 +179,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
-    /**
-     * set on click for favoriteButton button
-     */
-    public void setFavoriteOnClick() {
-        favoriteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean tSaved = !isSaved;
-                presenter.toggleMovieFavorite(movie.getId(), tSaved);
-                showFavorited(tSaved);
-            }
-        });
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         item.setChecked(true);
@@ -263,6 +206,70 @@ public class DetailsActivity extends AppCompatActivity implements DetailPresente
         startActivity(intent);
 
         return false;
+    }
+
+    private void loadMovie(Movie movie) {
+        Log.d(DetailsActivity.class.getSimpleName(), movie.getOverview());
+
+        description.setText(movie.getOverview());
+        title.setText(movie.getTitle());
+        date.setText(movie.getReleaseDate());
+        votes.setText(MovieUtils.toPercentage(movie.getVote()));
+
+        ImageUtils.loadImageInto(this, poster, movie.getPosterUrl());
+        ImageUtils.loadBackdropImageInto(this, backdrop, movie.getBackdrop());
+
+        colorizeActionbar();
+    }
+
+    private void colorizeActionbar() {
+        Bitmap bitmap = ((BitmapDrawable) poster.getDrawable()).getBitmap();
+
+        Palette p = Palette.from(bitmap).generate();
+
+        int dominateColor = p.getDominantColor(getResources().getColor(R.color.primaryDarkColor));
+        int darkVibrantColor = p.getDarkVibrantColor(getResources().getColor(R.color.primaryDarkColor));
+        int lightMutedColor = p.getVibrantColor(getResources().getColor(R.color.primaryLightColor));
+
+        if (darkVibrantColor < dominateColor) {
+            Log.d(DetailsActivity.class.getSimpleName(), "dominate color chosen");
+            dominateColor = darkVibrantColor;
+        }
+
+        shader.setBackgroundColor(dominateColor);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setBackgroundDrawable(
+                    new ColorDrawable(dominateColor));
+        }
+
+        favoriteButton.getBackground().setColorFilter(lightMutedColor, PorterDuff.Mode.MULTIPLY);
+    }
+
+    private void setVideoAndReviewRecyclerViews() {
+        videoRecyclerAdapter = new VideoRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieVideo>());
+        videoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        videoRecyclerView.setAdapter(videoRecyclerAdapter);
+        videoRecyclerView.setHasFixedSize(true);
+
+        reviewRecyclerView.addItemDecoration(ReviewRecyclerAdapter.getItemDecoration(this));
+        reviewRecyclerAdapter = new ReviewRecyclerAdapter(getLayoutInflater(), new ArrayList<MovieReview>());
+        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        reviewRecyclerView.setAdapter(reviewRecyclerAdapter);
+    }
+
+    /**
+     * set on click for favoriteButton button
+     */
+    private void setFavoriteOnClick() {
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean tSaved = !isSaved;
+                presenter.toggleMovieFavorite(movie.getId(), tSaved);
+                showFavorited(tSaved);
+            }
+        });
     }
 
     private void loadToolbarAndDrawer() {
