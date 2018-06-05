@@ -1,29 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
-    xmlns:app = "http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android = "http://schemas.android.com/apk/res/android"
     android:layout_width = "wrap_content"
-    android:layout_height = "50dp"
+    android:layout_height = "wrap_content"
     android:background = "@drawable/button_shape"
-    android:padding = "8dp"
-    >
+    android:padding = "8dp">
 
     <ImageView
-        android:id = "@+id/trailer_icon"
-        android:layout_width = "wrap_content"
-        android:layout_height = "match_parent"
-        android:contentDescription = "@string/trailer_icon"
-        android:foregroundGravity = "center"
-        app:srcCompat = "@android:drawable/ic_media_play"
-        />
-
-    <TextView
-        android:id = "@+id/trailer_text_view"
-        style = "@style/BlackText"
-        android:layout_width = "wrap_content"
-        android:layout_height = "match_parent"
+        android:id = "@+id/trailer_image_view"
+        android:layout_width = "230dp"
+        android:layout_height = "160dp"
         android:gravity = "center"
-        android:textSize = "@dimen/normal_text"
-        app:layout_constraintStart_toEndOf = "@id/trailer_icon"
-        />
+        android:scaleType = "fitXY"
+        android:contentDescription = "trailer_image" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

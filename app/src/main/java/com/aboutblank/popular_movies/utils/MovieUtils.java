@@ -46,10 +46,4 @@ public class MovieUtils {
 
         context.startActivity(intent);
     }
-
-    public static void startWebIntent(@NonNull Context context, @NonNull String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-
-        context.startActivity(intent);
-    }
 }

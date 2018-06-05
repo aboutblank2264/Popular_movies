@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.aboutblank.popular_movies.R;
 import com.aboutblank.popular_movies.presentation.model.MovieVideo;
+import com.aboutblank.popular_movies.utils.ImageUtils;
 import com.aboutblank.popular_movies.utils.MovieUtils;
 
 import java.util.List;
@@ -34,7 +35,8 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<VideoViewHolder>
 
     @Override
     public void onBindViewHolder(VideoViewHolder holder, int position) {
-        holder.setTitle(movieVideoList.get(position).getName());
+        MovieVideo video = movieVideoList.get(position);
+        ImageUtils.loadYoutubeIcon(inflater.getContext(),holder.getTrailerImageView(), video.getKey());
     }
 
     @Override
