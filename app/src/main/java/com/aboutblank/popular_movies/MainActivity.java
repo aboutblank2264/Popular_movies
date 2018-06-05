@@ -87,9 +87,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         super.onSaveInstanceState(outState);
         outState.putString(getString(R.string.bundle_list_type), listType.name());
 
-//        Log.d("Saving state!", String.valueOf(recyclerView.getLayoutManager().onSaveInstanceState()));
-//        outState.putParcelable(getString(R.string.bundle_main_save_position), recyclerView.getLayoutManager().onSaveInstanceState());
-        viewPositions.put(listType, recyclerView.getLayoutManager().onSaveInstanceState());
+        saveViewPosition();
         outState.putSerializable(getString(R.string.bundle_main_save_position), viewPositions);
     }
 
@@ -97,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-//        viewPositions = (HashMap<GetMovieDataUseCase.ListType, Parcelable>) savedInstanceState.getSerializable(getString(R.string.bundle_main_save_position));
     }
 
     @Override
@@ -119,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         GetMovieDataUseCase.ListType selectedType = listType;
 
-        viewPositions.put(listType, recyclerView.getLayoutManager().onSaveInstanceState());
+        saveViewPosition();
 
         switch (item.getItemId()) {
             case R.id.menu_popular:
@@ -170,10 +167,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     private void changeMovieType(@NonNull GetMovieDataUseCase.ListType listType) {
-
-        //Remove saved position
-//        currentViewPosition = null;
-
         if (listType != this.listType) {
             Log.d(MainActivity.class.getSimpleName(), "Changing movie list " + listType.name());
 
@@ -199,8 +192,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void saveViewPosition() {
+        viewPositions.put(listType, recyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
     private void restoreViewPosition() {
-        Log.d("Saved Position " + listType, String.valueOf(viewPositions.get(listType)));
         if (viewPositions.get(listType) != null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(viewPositions.get(listType));
         } else {
